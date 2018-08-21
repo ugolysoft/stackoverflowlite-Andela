@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Stackoverflow-Lite</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
+		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div class="row-container">
+                    <div class="col-half">
+                        <h1>StackOverflow-Lite</h1>
+                    </div>
+                    <nav class="col-half align-right">
+                        <ul>
+                            <li><a href="signin.html">Login</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                        </ul>
+                    </nav><br>
+                </div><br class="clear">
+                
+            </div>
+            <div id="nav-container">
+                    <nav class="align-center">
+                        <ul>
+                            <li class="active"><a href="index.html">Home</a></li>
+                            <li><a href="profile.html">User Page</a></li>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li><a href="postquestion.html">Ask</a></li>
+                        </ul>
+                   </nav>
+                </div>
+        </header>
+        <section id="bgphoto">
+            
+        </section>
+        <section id="body">
+            <div class="container">
+                <div class="row-container">
+                    <div id="welcomenote">
+                        <br><br>
+                        <h2 class="align-left">Welcome to StackOverflow-Lite forum template</h2>
+                        This is a template that demonstrates mutual learning system. Its benevolent nature makes it easier for every user to ask and answer questions. It is a system for collective and contributive learning. Oops! 
+                        This is just a template; no functional part. "You can not expect an elephant to be a Bonnie bird which makes its nest in the rhubarb tree and whistle like a cow." 
+                        But you can still navigate through the pages using the navigation bar. Enjoy Stack Overflow Lite forum templates
+                    </div>
+                    <div id="entry">
+                        <div class="relative">
+                            <div id="entry-form">
+                                <form action="" method="post">
+                                    <p class="align-center"><b>Sign Up</b></p><br>
+                                    <b>Name</b><br />
+                                    <input type="text" name="name" placeholder="What is your name" />
+                                    <b>Email</b><br />
+                                    <input type="email" name="email" placeholder="Enter your email address" />
+                                    <b>Password</b><br />
+                                    <input type="password" name="password"  placeholder="Create password" /><br>
+                                    <br>
+                                    <input type="submit"  class="btn block" value="Join Us"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <br class="clear"><br><br>
+            <div class="caption relative"><h3>Recent Questions</h3>
+                <div class="searchcontainer">
+                        <div class="relative">
+                            <input type="text" placeholder="search question" class="input-box" id="searchtext"/>
+                            <span class="searchbtn" onclick="search()">
+                                <span class="searchiconhead"></span>
+                                <span class="seachicontail"></span>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+            <br>
+            <table class="table-bottom-line" id="questionstb">
+                <tr><td><span class="inline-block unpad align-center">
+                            0 ans</span></td><td><a class="undecorated" href="answer.html"><b>This is the first recent asked question on the list</b></a>
+                        <p class="unpad align-right"><b>Emenike Okeke</b> <span class="inline-table">25 seconds ago</span></p></td></tr>
+                <tr><td><span class="inline-block unpad align-center">
+                            2 ans</span></td><td><a class="undecorated" href="answer.html"><b>The second recent question on the list</b></a>
+                                <p class="unpad align-right"><b>J Miracle</b> <span class="inline-table">5 minutes ago</span></p></td></tr>
+                <tr><td><span class="inline-block unpad align-center">
+                            3 ans</span></td><td><a class="undecorated" href="answer.html"><b>The third recent question on the list</b></a>
+                                <p class="unpad align-right"><b>S. Joe</b> <span class="inline-table">1 hour ago</span></p></td></tr>
+                <tr><td><span class="inline-block unpad align-center">
+                            13 ans</span></td><td><a class="undecorated" href="answer.html"><b>The fourth recent question on the list</b></a>
+                                <p class="unpad align-right"><b>S. Joe</b> <span class="inline-table">1 hour ago</span></p></td></tr>
+            </table>
+            </div>
+            <br class="clear" />
+        </section>
+        <footer>
+            Copyright © 2018. All Right Reserved
+        </footer>
+    </body>
+</html>
