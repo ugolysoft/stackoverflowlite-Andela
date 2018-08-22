@@ -1,6 +1,6 @@
 /*Global*/
 html, body{
-     padding: 0; margin: 0; font-family: 'Taprom';font-size: 15px;
+     padding: 0; margin: 0; font-family: 'Taprom';font-size: 16px !important;
 }
 body{
     background-color: #fff; 
