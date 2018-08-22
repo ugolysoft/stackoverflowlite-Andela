@@ -20,6 +20,7 @@ router.get('/api/v1/questions', qns.getAllQuestions);
 //GET A SINGLE QUESTION WITH USER THAT ASK THE QUESTION
 router.get('/api/v1/questions/:id', qns.getQuestion);
 
-
+//SAVE A QUESTION
+router.post('/api/v1/questions', qns.postQuestion);
 
 module.exports = router;

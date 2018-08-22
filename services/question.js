@@ -17,7 +17,17 @@ function getAllQuestions(req, res){
 	res.json(qns);
 }
 
+function postQuestion(req, res){
+	if(req.body.id && req.body.title && req.body.body && req.body.date && req.body.time && req.body.userid){
+		qns.push(req.body);
+		res.json(qns);
+	}else{
+		res.json(500, {error: 'There was an error!'});
+	}
+}
+
 module.exports = {
 	getQuestion,
-	getAllQuestions
+	getAllQuestions,
+	postQuestion
 }
