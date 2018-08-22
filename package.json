@@ -1,0 +1,36 @@
+{
+  "name": "stackoverflowlite-andela",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec",
+	"start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugolysoft/stackoverflowlite-Andela.git"
+  },
+  "keywords": [
+    "RESTapi",
+    "node.js",
+    "mocha"
+  ],
+  "author": "Onuorah Ugochukwu John",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ugolysoft/stackoverflowlite-Andela/issues"
+  },
+  "homepage": "https://github.com/ugolysoft/stackoverflowlite-Andela#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "underscore": "^1.9.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "eslint": "^5.4.0",
+    "mocha": "^5.2.0"
+  }
+}
