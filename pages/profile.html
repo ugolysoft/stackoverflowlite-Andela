@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Profile</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
+    </head>
+    <body >
+        <header>
+            <div class="container">
+                <div class="row-container">
+                    <div class="col-half">
+                        <h1>StackOverflow-Lite</h1>
+                    </div>
+                    <nav class="col-half align-right">
+                        <ul>
+                            <li><a href="signin.html">Login</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
+                        </ul>
+                    </nav><br>
+                </div><br class="clear">
+                
+            </div>
+            <div id="nav-container">
+                    <nav class="align-center">
+                        <ul>
+                            <li><a href="../index.html">Home</a></li>
+                            <li class="active"><a href="profile.html">User Page</a></li>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li><a href="postquestion.html">Ask</a></li>
+                        </ul>
+                   </nav>
+                </div>
+        </header>
+        <section id="body">
+            
+            <div class="container">
+            
+            
+            <br><br>
+            <div class="profilepicture">
+                <img src="../images/user.jpg" alt=""/>
+            </div>
+            <h3 class="align-center">Onuorah Ugochukwu</h3>
+            <p class="align-center">usermail@gmail.com</p>
+            <br>
+            <div class="align-center">
+                <div class="inline-block">
+                    <span class="lg-font block">7</span>
+                    <span>Asked Questions</span>
+                </div>
+                <div class="inline-block">
+                    <span class="lg-font block">12</span>
+                    <span>Answered Questions</span>
+                </div>
+                
+            </div><br><br>
+            
+            <div class="row-container">
+                
+                <div class="col-half">
+                    <span class="caption">Recent Asked Questions</span>
+                    <table class="table-bottom-line" id="recentquestionstb">
+                        <tr><td><a href="answer.html" class="undecorated"><b>The first recent asked question</b></a>
+                                <p class="unpad align-right">15 seconds ago</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                        <tr><td><a class="undecorated" href="answer.html"><b>The second recent asked question with more test to make it longer than others</b></a>
+                                <p class="unpad align-right">30 minutes ago</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                        <tr><td><a class="undecorated" href="answer.html"><b>The third recent asked question</b></a>
+                                <p class="unpad align-right">24 hours ago</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                        <tr><td><a class="undecorated" href="answer.html"><b>The fourth recent asked question</b></a>
+                                <p class="unpad align-right">2 days ago</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                    </table>
+                    <br>
+                    
+                </div>
+                <div class="col-half">
+                    <span class="caption">Most Answered Questions</span>
+                    <table class="table-bottom-line">
+                        <tr><td>12 ans</td><td><a class="undecorated" href="answer.html"><b>The first most answered question</b></a>
+                                <p class="unpad align-right">8 August, 2018 @ 12:00</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                        <tr><td>6 ans</td><td><a class="undecorated" href="answer.html"><b>The second most answered question</b></a>
+                                <p class="unpad align-right">7 August, 2018 @ 15:45</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                        <tr><td>3 ans</td><td><a class="undecorated" href="answer.html"><b>The third most answered question</b></a>
+                                <p class="unpad align-right">9 August, 2018 @ 16:30</p></td><td class="align-center"><span class="delete"></span>
+                            </td></tr>
+                    </table><br>
+                </div>
+            </div>
+            <br class="clear"><br><br>
+        </div>
+        </section>
+        <footer>
+            Copyright © 2018. All Right Reserved
+        </footer>
+        <script>
+            (function deleteItem(){
+                if(document.getElementsByClassName('delete')){
+                    var elem = document.getElementsByClassName('delete');
+                    for(var i = 0; i < elem.length; i++){
+                        elem[i].addEventListener("click", function(){
+                            var row = this.parentNode.parentNode;
+                            var q = row.getElementsByTagName('a')[0].childNodes[0].innerHTML;
+                            var con = confirm('Are you sure you want to delete this quwstion: "'+q+'"?');
+                            if(con){
+                                var parent = this.parentNode.parentNode.parentNode;
+                                var rowindex = row.rowIndex;
+                                parent.deleteRow(rowindex);
+                            }
+                        });
+                    }
+                }
+            })();
+        </script>
+    </body>
+</html>
