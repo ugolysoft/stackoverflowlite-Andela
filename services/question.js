@@ -26,8 +26,18 @@ function postQuestion(req, res){
 	}
 }
 
+function deleteQuestion(req, res){
+	var indexToDel = -1;
+	indexToDel = qns.findIndex((x)=>x.id === req.params.id);
+	if(~indexToDel){
+		qns.splice(indexToDel, 1);
+	}
+	res.json(qns);
+}
+
 module.exports = {
 	getQuestion,
 	getAllQuestions,
-	postQuestion
+	postQuestion,
+	deleteQuestion
 }

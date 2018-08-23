@@ -1,10 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-/*var qns = require('./json/questions.json');
-var ans = require('./json/answers.json');
-var users = require('./json/users.json');*/
 
 var qns = require('./controllers/question');
+var auth = require('./controllers/auth');
 
 var router = express.Router();
 
@@ -22,5 +20,12 @@ router.get('/api/v1/questions/:id', qns.getQuestion);
 
 //SAVE A QUESTION
 router.post('/api/v1/questions', qns.postQuestion);
+
+//DELETE A QUESTION
+router.delete('/api/v1/questions/:id', );
+
+
+//REGISTER USER
+router.post('/api/v1/register', auth.register);
 
 module.exports = router;
