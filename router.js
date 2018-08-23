@@ -37,4 +37,7 @@ router.post('/api/v1/register', auth.register);
 //SIGNUP USER
 router.post('/api/v1/login', auth.login);
 
+//UPDATE QUESTION
+router.put('/api/v1/questions/:id', qns.updateQuestion);
+
 module.exports = router;
