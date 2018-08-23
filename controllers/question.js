@@ -2,10 +2,30 @@
 var serviceQns = require('../services/question');
 
 function getAllQuestions(req, res){
-	
+	return serviceQns.allQuestions()
+	.then(results => {
+          res.send(results);
+     })
+	.catch(err=> {
+		console.log(err);
+          res.send({
+               success: false,
+               message: 'Operation failed. try again later. ' 
+          });
+	})
 }
 function getQuestion (req, res){
-	
+	return serviceQns.getQuestion(req.params.id)
+	.then(results => {
+          res.send(results);
+     })
+	.catch(err=> {
+		console.log(err);
+          res.send({
+               success: false,
+               message: 'Operation failed. try again later. ' 
+          });
+	})
 }
 
 function postQuestion(req, res){

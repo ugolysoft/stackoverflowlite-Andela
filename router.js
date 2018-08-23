@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 
 var qns = require('./controllers/question');
 var auth = require('./controllers/auth');
+var ans = require('./controllers/answer');
 
 var mdwear = require('./controllers/middlewares');
 
@@ -25,6 +26,9 @@ router.post('/api/v1/questions', mdwear.checkAuth, qns.postQuestion);
 
 //DELETE A QUESTION
 router.delete('/api/v1/questions/:id', );
+
+//SAVE A ANSWER
+router.post('/api/v1/questions/:questionid/answers', mdwear.checkAuth, ans.postAnswer);
 
 
 //REGISTER USER
