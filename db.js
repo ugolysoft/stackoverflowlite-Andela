@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const postgreSQL = new Sequelize('stackoverflowlite', 'postgres', 'ugowoo', {
   host: 'localhost',
-  port: '3500',
+  port: process.env.PORT || '3500',
   dialect: 'postgres',
   operatorsAliases: false,
   logging: false,

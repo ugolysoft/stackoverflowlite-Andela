@@ -28,4 +28,7 @@ router.delete('/api/v1/questions/:id', );
 //REGISTER USER
 router.post('/api/v1/register', auth.register);
 
+//SIGNUP USER
+router.post('/api/v1/login', auth.login);
+
 module.exports = router;
