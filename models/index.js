@@ -1,4 +1,37 @@
-const Sequelize = require('sequelize');
+const client = require('../db');
+
+const createUserTB = ()=>{
+	const query = client.query(
+		'CREATE TABLE newusers(id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, password VARCHAR(100) NOT NULL)'
+	).then('/', ()=>{ 
+		client.query( 'CREATE TABLE newquestions(id SERIAL PRIMARY KEY, body TEXT NOT NULL, title VARCHAR(50) NOT NULL, askedby INTEGER, askeddate DATE DEFAULT CURRENT_DATE)');
+	}).then('', ()=>{
+		client.query(
+			'CREATE TABLE newanswers(id SERIAL PRIMARY KEY, body TEXT NOT NULL, questionid INTEGER, answeredby INTEGER, ansdate DATE DEFAULT CURRENT_DATE)'
+		);
+	})
+	.catch(err=> console.log(err));
+}
+
+/*const createQuestionTB = ()=>{
+	const query = client.query(
+		'CREATE TABLE questions(id SERIAL PRIMARY KEY, body TEXT NOT NULL, title VARCHAR(50) NOT NULL, askedby INTEGER, askeddate DATE DEFAULT CURRENT_DATE)'
+	);
+	query.then('end', ()=>{ client.end(); }).catch(err=> console.log(err));
+}
+
+const createAnswerTB = ()=>{
+	const query = client.query(
+		'CREATE TABLE answers(id SERIAL PRIMARY KEY, body TEXT NOT NULL, questionid INTEGER, answeredby INTEGER, ansdate DATE DEFAULT CURRENT_DATE)'
+	);
+	query.then('end', ()=>{ client.end(); }).catch(err=> console.log(err));
+}*/
+
+module.exports = {
+     createUserTB
+ }
+
+/*const Sequelize = require('sequelize');
 const db = require('../db');
 
 const User = db.define('users', {
@@ -57,4 +90,4 @@ module.exports = {
      User,
      Question,
 	 Answer
- }
+ }*/
