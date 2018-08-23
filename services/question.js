@@ -18,8 +18,15 @@ const allQuestions= params => {
 	return client.runQuery(query);
 }
 
+const updateQuestion = params => {
+	const query = 'UPDATE questions SET body=$1,title=$2 WHERE id=$3';
+	const data = [params.body, params.title, params.id];
+	return client.runQuery(query, data);
+}
+
 module.exports = {
 	allQuestions,
 	postQuestion,
-	getQuestion
+	getQuestion,
+	updateQuestion
 }
