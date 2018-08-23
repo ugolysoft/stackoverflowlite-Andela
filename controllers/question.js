@@ -12,6 +12,10 @@ function postQuestion(req, res){
 	serviceQns.postQuestion(req, res);
 }
 
+function deleteQuestion(req, res){
+	serviceQns.deleteQuestion(req, res);
+}
+
 module.exports = {
     getAllQuestions,
 	getQuestion,
