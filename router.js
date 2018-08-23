@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 var qns = require('./controllers/question');
 var auth = require('./controllers/auth');
 
+var mdwear = require('./controllers/middlewares');
+
 var router = express.Router();
 
 router.use(bodyParser.urlencoded({extended: true}));
@@ -19,7 +21,7 @@ router.get('/api/v1/questions', qns.getAllQuestions);
 router.get('/api/v1/questions/:id', qns.getQuestion);
 
 //SAVE A QUESTION
-router.post('/api/v1/questions', qns.postQuestion);
+router.post('/api/v1/questions', mdwear.checkAuth, qns.postQuestion);
 
 //DELETE A QUESTION
 router.delete('/api/v1/questions/:id', );

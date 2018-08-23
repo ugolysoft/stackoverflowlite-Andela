@@ -1,19 +1,22 @@
-const User = require('../models').User;
+const client = require('../db');
 
 const getUserByLogin = params => {
-      return User.findOne({
-          where: {
-              email: params
-          }
-     })
+	
+	const query = 'SELECT * FROM users WHERE email=$1';
+	const data = [params];
+	return client.runQuery(query, data).then(user=>{
+		if(user && user.length > 0)
+			return true;
+        return false;
+	});
 }
 
 const addUser = params =>{
-	return User.create({
-		name: params.name,
-		password: params.password,
-		email: params.email
-		});
+	const query = 'INSERT INTO users(name,email,password) VALUES($1, $2, $3)';
+	const data = [params.name,params.email,params.password];
+	return client.runQuery(query, data).then(user=>{
+        return user;
+	});
 }
 
 

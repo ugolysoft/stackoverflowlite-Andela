@@ -23,12 +23,12 @@ function login(req, res){
 
 function register(req, res){
      var email = req.body.email;
-     return userService.getUserByLogin(req.body.email || '')
+     return userService.getUserByLogin(req.body.email)
      .then(exists => {
          if (exists){
 		   return res.send({
 			   success: false,
-			   message: 'Registration failed. User with this email already registered.'
+			   message: `Registration failed. User with this email '${email}' already registered.`
 		   });
          }
           var user = {
@@ -39,7 +39,7 @@ function register(req, res){
         return userService.addUser(user)
 		.then(() => res.send({success: true}))
 		.catch(err => {
-			res.status(400).send({ success: false });
+			res.status(400).send({ success: false, error: err });
 		});
      });
 	 

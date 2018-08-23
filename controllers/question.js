@@ -1,19 +1,33 @@
 
-var serviceQns = require('../services/question.js');
+var serviceQns = require('../services/question');
 
 function getAllQuestions(req, res){
-	serviceQns.getAllQuestions(req, res);
+	
 }
 function getQuestion (req, res){
-	serviceQns.getQuestion(req, res);
+	
 }
 
 function postQuestion(req, res){
-	serviceQns.postQuestion(req, res);
+	return serviceQns.postQuestion(req)
+     .then(execute => {
+          res.send({
+               success: true,
+               data: "Operation was successful"
+          });
+     })
+     .catch(err => {
+		 console.log(err);
+          res.send({
+               success: false,
+               message: 'Fail to save question. try again later. ' 
+          });
+		  
+     });
 }
 
 function deleteQuestion(req, res){
-	serviceQns.deleteQuestion(req, res);
+	
 }
 
 module.exports = {
