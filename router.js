@@ -1,10 +1,11 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-/*var qns = require('./json/questions.json');
-var ans = require('./json/answers.json');
-var users = require('./json/users.json');*/
 
 var qns = require('./controllers/question');
+var auth = require('./controllers/auth');
+var ans = require('./controllers/answer');
+
+var mdwear = require('./controllers/middlewares');
 
 var router = express.Router();
 
@@ -20,6 +21,23 @@ router.get('/api/v1/questions', qns.getAllQuestions);
 //GET A SINGLE QUESTION WITH USER THAT ASK THE QUESTION
 router.get('/api/v1/questions/:id', qns.getQuestion);
 
+//SAVE A QUESTION
+router.post('/api/v1/questions', mdwear.checkAuth, qns.postQuestion);
 
+//DELETE A QUESTION
+router.delete('/api/v1/questions/:id', );
+
+//SAVE A ANSWER
+router.post('/api/v1/questions/:questionid/answers', mdwear.checkAuth, ans.postAnswer);
+
+
+//REGISTER USER
+router.post('/api/v1/register', auth.register);
+
+//SIGNUP USER
+router.post('/api/v1/login', auth.login);
+
+//UPDATE QUESTION
+router.put('/api/v1/questions/:id', qns.updateQuestion);
 
 module.exports = router;

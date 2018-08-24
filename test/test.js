@@ -33,4 +33,23 @@ describe('API endpoint questions', () => {
 		});
 	});
 	
+	
+	it('should add new question', () => {
+		let qns = {
+				"id":"1",
+				"userid":"2",
+				"title": "This is title of first question",
+				"body":"This is the body of the first question",
+				"date":"2018/08/06",
+				"time":"12:15"
+			}
+		return chai.request(app).post('/api/v1/questions').send(qns).then((res) => {
+			expect(res).to.have.status(200);
+			expect(res).to.be.json;
+			expect(res.body).to.be.an('array');
+			
+		});
+	});
+
+	
 });
