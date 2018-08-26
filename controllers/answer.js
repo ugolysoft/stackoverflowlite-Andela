@@ -1,37 +1,30 @@
+var service = require("../services/answer");
+var errorMsg = require("../services/error");
+const authService = require("../services/auth");
 
-var service = require('../services/answer');
-
-function postAnswer(req, res){
-	if(req.body.body !== '' && req.params.questionid !== ''){
-		var enq = {
-			body: req.body.body,
-			userid: req.user.id,
-			questionid: req.params.questionid
-		};
-		return service.postAnswer(enq)
-		 .then(execute => {
-			  res.send({
-				   success: true,
-				   data: "Operation was successful"
-			  });
-		 })
-		 .catch(err => {
-			 console.log(err);
-			  res.send({
-				   success: false,
-				   message: 'Fail to save answer. try again later. ' 
-			  });
-			  
-		 });
-	}
-	res.send({
-		success: false,
-		message: 'Question body must not be empty.' 
-	});
+function postAnswer(req, res) {
+  if (req.headers["token"] && req.body.body != "" && req.params.questionid != "") {
+    const valid = authService.checkAuth(req.headers["token"]);
+    if (!valid.success) {
+      return res.send(valid);
+    }
+    req.user = valid.user;
+    return service
+      .postAnswer(req)
+      .then(execute => {
+        res.send({
+          success: true,
+          message: "Operation was successful",
+          data: execute
+        });
+      })
+      .catch(err => {
+        res.send(errorMsg.error(err));
+      });
+  }
+  res.send({ message: "Operation failed. Empty field or no token", success: false });
 }
-
-
 
 module.exports = {
-    postAnswer
-}
+  postAnswer
+};

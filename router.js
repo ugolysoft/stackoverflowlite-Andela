@@ -1,43 +1,39 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+var express = require("express");
+var bodyParser = require("body-parser");
 
-var qns = require('./controllers/question');
-var auth = require('./controllers/auth');
-var ans = require('./controllers/answer');
+var qns = require("./controllers/question");
+var auth = require("./controllers/auth");
+var ans = require("./controllers/answer");
 
-var mdwear = require('./controllers/middlewares');
+var mdwear = require("./controllers/middlewares");
+
+const client = require("./db");
 
 var router = express.Router();
 
-router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
+setTimeout(() => {
+  client.userTB();
+}, 200);
 
-//GET ALL QUESTIONS
-router.get('/api/v1/questions', qns.getAllQuestions);
+router.get("/api/v1/questions", qns.getAllQuestions);
 
+router.get("/api/v1/questions/:id", qns.getQuestion);
 
+router.post("/api/v1/questions", qns.postQuestion);
 
-//GET A SINGLE QUESTION WITH USER THAT ASK THE QUESTION
-router.get('/api/v1/questions/:id', qns.getQuestion);
+router.delete("/api/v1/questions/:id");
 
-//SAVE A QUESTION
-router.post('/api/v1/questions', mdwear.checkAuth, qns.postQuestion);
+router.post("/api/v1/questions/:questionid/answers", ans.postAnswer);
 
-//DELETE A QUESTION
-router.delete('/api/v1/questions/:id', );
+router.post("/api/v1/register", auth.register);
 
-//SAVE A ANSWER
-router.post('/api/v1/questions/:questionid/answers', mdwear.checkAuth, ans.postAnswer);
+router.post("/api/v1/login", auth.login);
 
+router.put("/api/v1/questions/:id", mdwear.checkAuth, qns.updateQuestion);
 
-//REGISTER USER
-router.post('/api/v1/register', auth.register);
-
-//SIGNUP USER
-router.post('/api/v1/login', auth.login);
-
-//UPDATE QUESTION
-router.put('/api/v1/questions/:id', qns.updateQuestion);
+router.delete("/api/v1/questions/:id", qns.deleteQuestion);
 
 module.exports = router;

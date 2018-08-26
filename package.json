@@ -2,10 +2,10 @@
   "name": "stackoverflowlite-andela",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -39,5 +39,9 @@
     "chai-http": "^4.0.0",
     "eslint": "^5.4.0",
     "mocha": "^5.2.0"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "parser": "flow"
   }
 }
