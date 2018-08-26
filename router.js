@@ -5,7 +5,7 @@ var qns = require("./controllers/question");
 var auth = require("./controllers/auth");
 var ans = require("./controllers/answer");
 
-var mdwear = require("./controllers/middlewares");
+//var mdwear = require("./controllers/middlewares");
 
 const client = require("./db");
 
@@ -32,7 +32,9 @@ router.post("/api/v1/register", auth.register);
 
 router.post("/api/v1/login", auth.login);
 
-router.put("/api/v1/questions/:id", mdwear.checkAuth, qns.updateQuestion);
+router.post("/api/v1/questions/:questionid/answers/:id", ans.vote);
+
+router.put("/api/v1/questions/:id", qns.updateQuestion);
 
 router.delete("/api/v1/questions/:id", qns.deleteQuestion);
 

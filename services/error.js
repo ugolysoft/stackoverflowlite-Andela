@@ -6,10 +6,11 @@ const error = (error, msg = "Operation failed. Please try again later.") => {
   };
 };
 
-const info = msg => {
+const info = (msg, success = false, data = "") => {
   return {
-    success: true,
-    message: msg
+    success: success,
+    message: msg,
+    data: data
   };
 };
 

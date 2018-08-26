@@ -26,7 +26,11 @@ function userTB() {
         u =
           "CREATE TABLE answers(id SERIAL PRIMARY KEY, body TEXT NOT NULL, answeredby INTEGER NOT NULL, " +
           "ansdate DATE DEFAULT CURRENT_DATE, questionid INTEGER NOT NULL)";
-        runQuery(u);
+        runQuery(u).then(res => {
+          u =
+            "CREATE TABLE public.votes (id SERIAL NOT NULL, vote integer NOT NULL, answerid integer NOT NULL, " +
+            "votedate DATE DEFAULT CURRENT_DATE, votedby integer NOT NULL )";
+        });
       });
     })
     .catch(err => {
