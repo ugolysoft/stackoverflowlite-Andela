@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ugolysoft/stackoverflowlite-Andela.svg?branch=develop)](https://travis-ci.org/ugolysoft/stackoverflowlite-Andela)
+
 # StackOverFlowLite-Andela
 ## Introduction
 This program set up a simple nodejs-restful Api using json files (users.json,questions.json,answers.json) data structure
@@ -15,8 +17,9 @@ the server file is used to spin up the server and tells the app to listen on a s
 * user can login 
 * user can have access to a question and its answers
 * user can scan through list of question titles
-* loggin user can post a question
-* loggin user can answer a question
+* logged in user can post a question
+* logged in user can answer a question
+* logged in user should be able to vote up or vote down an answer
 ## Technology used
 - NodeJs
 - Express

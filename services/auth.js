@@ -26,18 +26,21 @@ const authenticate = params => {
   });
 };
 
-const checkAuth = param => {
-  return jwt.verify(param, "make-me-screet", (err, decoded) => {
+const checkAuth = req => {
+  var token = req.headers["token"];
+  if (!token) return false;
+
+  return jwt.verify(token, "make-me-screet", (err, decoded) => {
     if (err) {
-      return { success: false, message: "Operation failed. Failed to authenticate token." };
+      return false;
     }
 
-    let code = {
+    req.user = {
       email: decoded.email,
       id: decoded.id,
       name: decoded.name
     };
-    return { success: true, message: "valide token", user: code };
+    return true;
   });
 };
 

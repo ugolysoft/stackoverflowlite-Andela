@@ -7,7 +7,8 @@ const postQuestion = params => {
 };
 const getQuestion = params => {
   const query =
-    "SELECT a.*,c.name,b.body AS ans, b.id AS ansid, b.ansdate, x.name AS ansby FROM questions a LEFT JOIN " +
+    "SELECT a.*,c.name,b.body AS ans, b.id AS ansid, b.ansdate, x.name AS ansby, " +
+    "(SELECT SUM(vote) FROM votes WHERE answerid=b.id) AS vote FROM questions a LEFT JOIN " +
     "(answers b INNER JOIN users x ON x.id=b.answeredby) ON a.id=b.questionid INNER JOIN users c ON (c.id=a.askedby) WHERE a.id=$1";
   const data = [params];
   return client.runQuery(query, data);

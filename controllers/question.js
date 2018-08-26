@@ -30,7 +30,9 @@ function getQuestion(req, res) {
             ans.push({
               body: value.ans,
               answeredby: value.ansby,
-              answerdate: value.ansdate
+              answerdate: value.ansdate,
+              id: value.ansid,
+              votes: value.vote
             });
           }
         });
@@ -43,12 +45,7 @@ function getQuestion(req, res) {
 }
 
 function postQuestion(req, res) {
-  if (req.headers["token"] && req.body.body != "" && req.body.title != "") {
-    const valid = authService.checkAuth(req.headers["token"]);
-    if (!valid.success) {
-      return res.send(valid);
-    }
-    req.user = valid.user;
+  if (req.body.body && req.body.title && authService.checkAuth(req) && req.body.body != "" && req.body.title != "") {
     return serviceQns
       .postQuestion(req)
       .then(execute => {
@@ -62,16 +59,11 @@ function postQuestion(req, res) {
         res.send(errorMsg.error(err));
       });
   }
-  return res.send({ success: false, message: "Operation failed. No token or empty field" });
+  return res.send(errorMsg.info("Operation failed. No token or empty field"));
 }
 
 function updateQuestion(req, res) {
-  if (req.headers["token"]) {
-    const valid = authService.checkAuth(req.headers["token"]);
-    if (!valid.success) {
-      return res.send(valid);
-    }
-    req.user = valid.user;
+  if ((req.body.body || req.body.title) && req.params.id && authService.checkAuth(req)) {
     return serviceQns.getQuestion(req.params.id).then(results => {
       if (results[0].id) {
         if (results[0].askedby == req.user.id) {
@@ -99,12 +91,7 @@ function updateQuestion(req, res) {
 }
 
 function deleteQuestion(req, res) {
-  if (req.headers["token"]) {
-    const valid = authService.checkAuth(req.headers["token"]);
-    if (!valid.success) {
-      return res.send(valid);
-    }
-    req.user = valid.user;
+  if (req.params.id && authService.checkAuth(req)) {
     return serviceQns
       .getQuestion(req.params.id)
       .then(results => {

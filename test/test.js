@@ -10,7 +10,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 let token = "",
-  questionid = "";
+  questionid = "",
+  answerid = "";
 
 describe("Test stackoverflowlite RESTAPI", () => {
   before(() => {});
@@ -106,6 +107,8 @@ describe("Test stackoverflowlite RESTAPI", () => {
         } else {
           expect(res).to.have.status(200);
           expect(res.body.message).to.equal("Operation was successful");
+          answerid = res.body.data[0].id;
+          console.log(answerid);
         }
       });
   });
@@ -154,6 +157,25 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("array");
+      });
+  });
+
+  it("logged in user should be able to voteup or votedown question", () => {
+    let vote = {
+      vote: 1
+    };
+    return chai
+      .request(app)
+      .post("/api/v1/questions/" + questionid + "/answers/" + answerid)
+      .set("token", token)
+      .send(vote)
+      .then(res => {
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body.message).to.equal("Operation was successful");
+        }
       });
   });
 });
