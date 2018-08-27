@@ -5,18 +5,10 @@ var qns = require("./controllers/question");
 var auth = require("./controllers/auth");
 var ans = require("./controllers/answer");
 
-//var mdwear = require("./controllers/middlewares");
-
-const client = require("./db");
-
 var router = express.Router();
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-
-setTimeout(() => {
-  client.userTB();
-}, 200);
 
 router.get("/api/v1/questions", qns.getAllQuestions);
 
