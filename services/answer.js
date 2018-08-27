@@ -9,8 +9,7 @@ const postAnswer = params => {
 };
 const vote = params => {
   const query =
-    "INSERT INTO votes(vote,answerid,votedby) SELECT $1, $2, $3 WHERE NOT EXISTS(SELECT id FROM votes " +
-    "WHERE answerid=$4 AND votedby=$5) RETURNING * ";
+    "INSERT INTO votes(vote,answerid,votedby) SELECT $1, $2, $3 WHERE NOT EXISTS(SELECT id FROM votes WHERE answerid=$4 AND votedby=$5) RETURNING * ";
   const data = [
     params.body.vote,
     params.params.id,

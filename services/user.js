@@ -10,8 +10,9 @@ const getUserByLogin = params => {
 };
 
 const addUser = params => {
-  const query = "INSERT INTO users(name,email,password) VALUES($1, $2, $3) RETURNING *";
-  const data = [params.name, params.email, params.password];
+  const query =
+    "INSERT INTO users(name,email,password) SELECT $1, $2, $3 WHERE NOT EXISTS(SELECT id FROM users WHERE email=$4 LIMIT 1) RETURNING *";
+  const data = [params.name, params.email, params.password, params.email];
   return client.runQuery(query, data);
 };
 

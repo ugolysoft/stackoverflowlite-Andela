@@ -45,7 +45,7 @@ function getQuestion(req, res) {
 }
 
 function postQuestion(req, res) {
-  if (req.body.body && req.body.title && authService.checkAuth(req) && req.body.body != "" && req.body.title != "") {
+  if (authService.checkAuth(req) && req.body.body != "" && req.body.title != "") {
     return serviceQns
       .postQuestion(req)
       .then(execute => {
@@ -63,7 +63,7 @@ function postQuestion(req, res) {
 }
 
 function updateQuestion(req, res) {
-  if ((req.body.body || req.body.title) && req.params.id && authService.checkAuth(req)) {
+  if (authService.checkAuth(req)) {
     return serviceQns.getQuestion(req.params.id).then(results => {
       if (results[0].id) {
         if (results[0].askedby == req.user.id) {
@@ -91,7 +91,7 @@ function updateQuestion(req, res) {
 }
 
 function deleteQuestion(req, res) {
-  if (req.params.id && authService.checkAuth(req)) {
+  if (authService.checkAuth(req)) {
     return serviceQns
       .getQuestion(req.params.id)
       .then(results => {

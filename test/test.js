@@ -14,10 +14,13 @@ let token = "",
   answerid = "";
 
 describe("Test stackoverflowlite RESTAPI", () => {
-  before(() => {});
+  before(() => {
+    return db.userTB();
+  });
 
   after(() => {
     db.runQuery("TRUNCATE TABLE users");
+    db.runQuery("TRUNCATE TABLE votes");
     db.runQuery("TRUNCATE TABLE questions");
     db.runQuery("TRUNCATE TABLE answers");
   });
@@ -38,7 +41,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
           expect(res.body.message).to.include("Resgistration was successful");
         } else {
           expect(res.body.message).to.equal(
-            `Registration failed. User with this email '${user.email}' already registered.`
+            `Registration failed. Email '${user.email}' already exist.`
           );
         }
       });
@@ -59,6 +62,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
           expect(res.body.message).to.include("Wrong");
         } else {
           token = res.body.token;
+
           expect(res.body).to.have.property("token");
           jwt.verify(res.body.token, "make-me-screet", (err, decoded) => {
             if (!err) {
@@ -108,11 +112,9 @@ describe("Test stackoverflowlite RESTAPI", () => {
           expect(res).to.have.status(200);
           expect(res.body.message).to.equal("Operation was successful");
           answerid = res.body.data[0].id;
-          console.log(answerid);
         }
       });
   });
-  
 
   it("should be able to view all questions", () => {
     return chai
