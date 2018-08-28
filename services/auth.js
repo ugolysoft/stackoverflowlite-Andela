@@ -9,7 +9,7 @@ const authenticate = params => {
     if (Array.isArray(user) && user.length > 0) {
       if (!bcrypt.compareSync(params.password || "", user[0].password))
         return { success: false, message: "Wrong password" };
-      const payload = {
+      const userData = {
         name: user[0].name,
         email: user[0].email,
         id: user[0].id,
@@ -17,7 +17,7 @@ const authenticate = params => {
       };
       return {
         success: true,
-        token: jwt.sign(payload, "make-me-screet", {
+        token: jwt.sign(userData, "make-me-screet", {
           expiresIn: "2h"
         })
       };

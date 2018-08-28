@@ -156,6 +156,26 @@ describe("Test stackoverflowlite RESTAPI", () => {
       });
   });
 
+  it("loggin user can provide comment on an answer", () => {
+    let comment = {
+      body: "This is my comments to this answer"
+    };
+    return chai
+      .request(app)
+      .post("/api/v1/questions/answers/" + answerid)
+      .set("token", token)
+      .send(comment)
+      .then(res => {
+        //console.log(res.body);
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body.message).to.equal("Operation was successful");
+        }
+      });
+  });
+
   it("logged in user should be able to edit his question", () => {
     let edit = {
       title: "I am edited title",

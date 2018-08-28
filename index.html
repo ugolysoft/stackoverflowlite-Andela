@@ -51,16 +51,17 @@
                     <div id="entry">
                         <div class="relative">
                             <div id="entry-form">
-                                <form action="" method="post">
+                                <form>
                                     <p class="align-center"><b>Sign Up</b></p><br>
                                     <b>Name</b><br />
-                                    <input type="text" name="name" placeholder="What is your name" />
+                                    <input type="text" name="name" id="name" placeholder="What is your name" />
                                     <b>Email</b><br />
-                                    <input type="email" name="email" placeholder="Enter your email address" />
+                                    <input type="email" name="email" id="email" placeholder="Enter your email address" />
                                     <b>Password</b><br />
-                                    <input type="password" name="password"  placeholder="Create password" /><br>
+                                    <input type="password" name="password" id="password"  placeholder="Create password" /><br>
                                     <br>
-                                    <input type="submit"  class="btn block" value="Join Us"/>
+                                    <input type="button"  class="btn block" id="signup" value="Join Us"/>
+									
                                 </form>
                             </div>
                         </div>
@@ -100,5 +101,6 @@
         <footer>
             Copyright © 2018. All Right Reserved
         </footer>
+        <script src="pages/classes/user.js"></script>
     </body>
 </html>

@@ -32,7 +32,8 @@ function getQuestion(req, res) {
               answeredby: value.answeredby,
               answerdate: value.ansdate,
               id: value.ansid,
-              votes: value.vote
+              votes: value.vote,
+              comments: value.comments
             });
           }
         });
