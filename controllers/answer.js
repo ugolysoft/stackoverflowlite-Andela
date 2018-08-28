@@ -54,8 +54,25 @@ function acceptedAnswer(req, res) {
   }
 }
 
+function comment(req, res) {
+  if (authService.checkAuth(req) && req.body.body != "" && parseInt(req.params.id) > 0) {
+    return service
+      .addComment(req)
+      .then(execute => {
+        if (execute.length > 0) {
+          res.json(errorMsg.info("Operation was successful", true, execute));
+        } else res.json(errorMsg.info("Operation failed. You send a wrong answer id"));
+      })
+      .catch(err => {
+        res.json(errorMsg.error(err));
+      });
+  }
+  return res.json(errorMsg.info("Fill all boxes. "));
+}
+
 module.exports = {
   postAnswer,
   vote,
-  acceptedAnswer
+  acceptedAnswer,
+  comment
 };

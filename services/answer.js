@@ -23,6 +23,15 @@ const vote = params => {
   });
 };
 
+const addComment = params => {
+  const query =
+    "INSERT INTO comments_tb(message, anscomment, commentedby) VALUES($1, $2, $3) RETURNING * ";
+  const data = [params.body.body, params.params.id, params.user.id];
+  return client.runQuery(query, data).then(comment => {
+    return comment;
+  });
+};
+
 const acceptedAnswer = (questionid, answereid) => {
   const query =
     "UPDATE questions_tb SET preferred=(SELECT ansid FROM answers_tb WHERE qnsid=$1 AND ansid=$2) WHERE qnsid=$3 RETURNING * ";
@@ -34,5 +43,6 @@ const acceptedAnswer = (questionid, answereid) => {
 module.exports = {
   postAnswer,
   vote,
-  acceptedAnswer
+  acceptedAnswer,
+  addComment
 };

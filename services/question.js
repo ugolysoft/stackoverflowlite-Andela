@@ -7,8 +7,9 @@ const postQuestion = params => {
 };
 const getQuestion = params => {
   const query =
-    "SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote FROM questions_tb a LEFT JOIN " +
-    "(answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid INNER JOIN users_tb c ON (c.id=a.askedby) WHERE a.qnsid=$1";
+    "SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote " +
+    ", (SELECT ARRAY_AGG(CONCAT_WS('$*%',message,commentedby)) FROM comments_tb WHERE anscomment=b.ansid) AS comments " +
+    "FROM questions_tb a LEFT JOIN (answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid INNER JOIN users_tb c ON (c.id=a.askedby) WHERE a.qnsid=$1";
   const data = [params];
   return client.runQuery(query, data);
 };
