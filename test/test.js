@@ -19,10 +19,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
   });
 
   after(() => {
-    db.runQuery("TRUNCATE TABLE users");
-    db.runQuery("TRUNCATE TABLE votes");
-    db.runQuery("TRUNCATE TABLE questions");
-    db.runQuery("TRUNCATE TABLE answers");
+    db.runQuery("DELETE FROM users_tb");
   });
 
   it("should create new user", () => {
@@ -84,14 +81,15 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .set("token", token)
       .send(qns)
       .then(res => {
+        //console.log(res.body);
         if (!res.body.success) {
           expect(res.body.message).to.include("Operation failed");
         } else {
           expect(res).to.have.status(200);
           expect(res.body.message).to.equal("Operation was successful");
           expect(res.body.data).to.be.an("array");
-          expect(res.body.data[0].message).to.be.equal(qns.message);
-          questionid = res.body.data[0].id;
+          expect(res.body.data[0].question).to.be.equal(qns.body);
+          questionid = res.body.data[0].qnsid;
         }
       });
   });
@@ -106,12 +104,13 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .set("token", token)
       .send(ans)
       .then(res => {
+        //console.log(res.body);
         if (!res.body.success) {
           expect(res.body.message).to.include("Operation failed");
         } else {
           expect(res).to.have.status(200);
           expect(res.body.message).to.equal("Operation was successful");
-          answerid = res.body.data[0].id;
+          answerid = res.body.data[0].ansid;
         }
       });
   });
@@ -121,6 +120,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .request(app)
       .get("/api/v1/questions")
       .then(res => {
+        //console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("array");
       });
@@ -136,6 +136,26 @@ describe("Test stackoverflowlite RESTAPI", () => {
       });
   });
 
+  it("logged in user should be able to voteup or votedown question", () => {
+    let vote = {
+      vote: 1
+    };
+    return chai
+      .request(app)
+      .post("/api/v1/questions/" + questionid + "/answers/" + answerid)
+      .set("token", token)
+      .send(vote)
+      .then(res => {
+        //console.log(res.body);
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body.message).to.equal("Operation was successful");
+        }
+      });
+  });
+
   it("logged in user should be able to edit his question", () => {
     let edit = {
       title: "I am edited title",
@@ -148,7 +168,18 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .send(edit)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an("array");
+        expect(res.body).to.be.an("object");
+      });
+  });
+
+  it("logged in user should be able to marked answer to his question as preferred answer", () => {
+    return chai
+      .request(app)
+      .put("/api/v1/questions/" + questionid + "/answers/" + answerid)
+      .set("token", token)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an("object");
       });
   });
 
@@ -159,26 +190,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .set("token", token)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.an("array");
-      });
-  });
-
-  it("logged in user should be able to voteup or votedown question", () => {
-    let vote = {
-      vote: 1
-    };
-    return chai
-      .request(app)
-      .post("/api/v1/questions/" + questionid + "/answers/" + answerid)
-      .set("token", token)
-      .send(vote)
-      .then(res => {
-        if (!res.body.success) {
-          expect(res.body.message).to.include("Operation failed");
-        } else {
-          expect(res).to.have.status(200);
-          expect(res.body.message).to.equal("Operation was successful");
-        }
+        expect(res.body).to.be.an("object");
       });
   });
 });
