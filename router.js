@@ -28,6 +28,8 @@ router.post("/api/v1/questions/:questionid/answers/:id", ans.vote);
 
 router.put("/api/v1/questions/:id", qns.updateQuestion);
 
+router.put("/api/v1/questions/:questionid/answers/:answerid", ans.acceptedAnswer);
+
 router.delete("/api/v1/questions/:id", qns.deleteQuestion);
 
 module.exports = router;

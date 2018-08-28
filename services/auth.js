@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const client = require("../db");
 
 const authenticate = params => {
-  const query = "SELECT * FROM users WHERE email=$1";
+  const query = "SELECT * FROM users_tb WHERE email=$1";
   const data = [params.email];
   return client.runQuery(query, data).then(user => {
     if (Array.isArray(user) && user.length > 0) {

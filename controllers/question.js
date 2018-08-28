@@ -22,14 +22,14 @@ function getQuestion(req, res) {
         results.forEach(value => {
           qns = {
             title: value.title,
-            body: value.body,
+            body: value.question,
             askeddby: value.name,
             on: value.askeddate
           };
-          if (value.ans != null && value.ans != "") {
+          if (value.answer != null && value.answer != "") {
             ans.push({
-              body: value.ans,
-              answeredby: value.ansby,
+              body: value.answer,
+              answeredby: value.answeredby,
               answerdate: value.ansdate,
               id: value.ansid,
               votes: value.vote
@@ -63,54 +63,35 @@ function postQuestion(req, res) {
 }
 
 function updateQuestion(req, res) {
-  if (authService.checkAuth(req)) {
-    return serviceQns.getQuestion(req.params.id).then(results => {
-      if (results[0].id) {
-        if (results[0].askedby == req.user.id) {
-          let params = {
-            id: req.params.id,
-            body: req.body.body || results[0].body,
-            title: req.body.title || results[0].title
-          };
-          return serviceQns
-            .updateQuestion(params)
-            .then(execute => {
-              res.json(execute);
-            })
-            .catch(err => {
-              res.json(errorMsg.error(err, "Fail to save question. try again later. "));
-            });
+  if (authService.checkAuth(req) && (req.body.title != "" && req.body.body != "")) {
+    let params = {
+      id: req.params.id,
+      body: req.body.body,
+      title: req.body.title,
+      userid: req.user.id
+    };
+    return serviceQns
+      .updateQuestion(params)
+      .then(execute => {
+        if (execute.length > 0) {
+          return res.send(errorMsg.info("update successful", true, execute));
         } else {
-          res.json(errorMsg.info("You cannot edit this question"));
+          return res.send(errorMsg.info("You cannot update this question"));
         }
-      } else {
-        res.json(errorMsg.info("No data found"));
-      }
-    });
+      })
+      .catch(err => {
+        res.json(errorMsg.error(err, "Fail to save question. try again later. "));
+      });
   }
 }
 
 function deleteQuestion(req, res) {
   if (authService.checkAuth(req)) {
     return serviceQns
-      .getQuestion(req.params.id)
-      .then(results => {
-        if (results[0].id) {
-          if (results[0].askedby == req.user.id) {
-            return serviceQns
-              .deleteQuestion(req.params.id)
-              .then(execute => {
-                res.json(execute);
-              })
-              .catch(err => {
-                res.json(errorMsg.error(err, "Fail to delete question. try again later. "));
-              });
-          } else {
-            res.json(errorMsg.info("You cannot delete question you did not post"));
-          }
-        } else {
-          res.json(errorMsg.info("no dta found. "));
-        }
+      .deleteQuestion(req.params.id, req.user.id)
+      .then(execute => {
+        if (execute.length > 0) res.json(errorMsg.info("Operation was successful", true, execute));
+        else res.json(errorMsg.info("You cannot delete question you did not post"));
       })
       .catch(err => {
         res.json(errorMsg.error(err, "Fail to delete question. try again later. "));

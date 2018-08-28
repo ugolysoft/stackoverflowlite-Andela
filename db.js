@@ -15,25 +15,35 @@ function runQuery(querystring, data = []) {
 
 function userTB() {
   let query =
-    "CREATE TABLE votes(id SERIAL PRIMARY KEY, vote integer NOT NULL, answerid integer NOT NULL, " +
-    " votedate DATE DEFAULT CURRENT_DATE NOT NULL, votedby integer NOT NULL)";
+    "CREATE TABLE users_tb(id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, email VARCHAR(50) " +
+    "NOT NULL UNIQUE, password VARCHAR(100) NOT NULL)";
   return runQuery(query)
     .then(res => {
+      //question
       query =
-        "CREATE TABLE users(id SERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, email VARCHAR(50) " +
-        "NOT NULL UNIQUE, password VARCHAR(100) NOT NULL)";
+        "CREATE TABLE questions_tb(qnsid SERIAL UNIQUE NOT NULL, title VARCHAR(80) NOT NULL, question TEXT NOT NULL, preferred INTEGER," +
+        " askedby INTEGER REFERENCES users_tb(id) ON DELETE CASCADE ON UPDATE CASCADE, askedate DATE DEFAULT CURRENT_DATE, PRIMARY KEY (qnsid, askedby))";
       return runQuery(query);
     })
     .then(res => {
       query =
-        "CREATE TABLE questions(id SERIAL PRIMARY KEY, title VARCHAR(80) NOT NULL, body TEXT NOT NULL, askedby INTEGER NOT NULL, " +
-        "askedate DATE DEFAULT CURRENT_DATE)";
+        "CREATE TABLE answers_tb(ansid SERIAL UNIQUE NOT NULL, answer TEXT NOT NULL, answeredby INTEGER REFERENCES users_tb(id) ON DELETE CASCADE ON UPDATE CASCADE, " +
+        "ansdate DATE DEFAULT CURRENT_DATE, questionid INTEGER REFERENCES questions_tb(qnsid) ON DELETE CASCADE ON UPDATE CASCADE," +
+        " PRIMARY KEY (ansid,answeredby,questionid))";
       return runQuery(query);
     })
     .then(res => {
       query =
-        "CREATE TABLE answers(id SERIAL PRIMARY KEY, body TEXT NOT NULL, answeredby INTEGER NOT NULL, " +
-        "ansdate DATE DEFAULT CURRENT_DATE, questionid INTEGER NOT NULL)";
+        "CREATE TABLE votes_tb(voteid SERIAL UNIQUE NOT NULL, vote integer NOT NULL, ansvote integer REFERENCES answers_tb(ansid) ON DELETE CASCADE ON UPDATE CASCADE, " +
+        " votedate DATE DEFAULT CURRENT_DATE NOT NULL, votedby INTEGER REFERENCES users_tb(id) ON DELETE CASCADE ON UPDATE CASCADE, PRIMARY KEY (voteid,ansvote,votedby))";
+
+      return runQuery(query);
+    })
+    .then(res => {
+      query =
+        "CREATE TABLE comments_tb(cmtid SERIAL UNIQUE NOT NULL, message TEXT NOT NULL, anscomment integer REFERENCES answers_tb(ansid) ON DELETE CASCADE ON UPDATE CASCADE, " +
+        " commentdate DATE DEFAULT CURRENT_DATE NOT NULL, commentedby INTEGER REFERENCES users_tb(id) ON DELETE CASCADE ON UPDATE CASCADE, PRIMARY KEY (cmtid,anscomment,commentedby))";
+
       return runQuery(query);
     })
     .catch(err => {
