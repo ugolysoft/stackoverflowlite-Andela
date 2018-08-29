@@ -28,6 +28,8 @@ router.post("/api/v1/questions/:questionid/answers/:id", ans.vote);
 
 router.post("/api/v1/questions/answers/:id", ans.comment);
 
+router.post("/api/v1/questions/search", qns.search);
+
 router.put("/api/v1/questions/:id", qns.updateQuestion);
 
 router.put("/api/v1/questions/:questionid/answers/:answerid", ans.acceptedAnswer);

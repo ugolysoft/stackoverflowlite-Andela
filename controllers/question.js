@@ -6,10 +6,10 @@ function getAllQuestions(req, res) {
   return serviceQns
     .allQuestions()
     .then(results => {
-      res.json(results);
+      res.send(results);
     })
     .catch(err => {
-      res.json(errorMsg.error(err));
+      res.send(errorMsg.error(err));
     });
 }
 function getQuestion(req, res) {
@@ -38,10 +38,10 @@ function getQuestion(req, res) {
           }
         });
       }
-      res.json({ question: qns, answers: ans });
+      res.send({ question: qns, answers: ans });
     })
     .catch(err => {
-      res.json(errorMsg.error(err));
+      res.send(errorMsg.error(err));
     });
 }
 
@@ -63,6 +63,20 @@ function postQuestion(req, res) {
   return res.send(errorMsg.info("Operation failed. No token or empty field"));
 }
 
+function search(req, res) {
+  if (req.body.search != "") {
+    return serviceQns
+      .search(req.body.search)
+      .then(results => {
+        res.send([{ send: req.body.search, ans: results }]);
+      })
+      .catch(err => {
+        res.send(errorMsg.error(err));
+      });
+  }
+  return res.send(errorMsg.info("search field is empty"));
+}
+
 function updateQuestion(req, res) {
   if (authService.checkAuth(req) && (req.body.title != "" && req.body.body != "")) {
     let params = {
@@ -81,7 +95,7 @@ function updateQuestion(req, res) {
         }
       })
       .catch(err => {
-        res.json(errorMsg.error(err, "Fail to save question. try again later. "));
+        res.send(errorMsg.error(err, "Fail to save question. try again later. "));
       });
   }
 }
@@ -91,11 +105,11 @@ function deleteQuestion(req, res) {
     return serviceQns
       .deleteQuestion(req.params.id, req.user.id)
       .then(execute => {
-        if (execute.length > 0) res.json(errorMsg.info("Operation was successful", true, execute));
-        else res.json(errorMsg.info("You cannot delete question you did not post"));
+        if (execute.length > 0) res.send(errorMsg.info("Operation was successful", true, execute));
+        else res.send(errorMsg.info("You cannot delete question you did not post"));
       })
       .catch(err => {
-        res.json(errorMsg.error(err, "Fail to delete question. try again later. "));
+        res.send(errorMsg.error(err, "Fail to delete question. try again later. "));
       });
   }
 }
@@ -105,5 +119,6 @@ module.exports = {
   getQuestion,
   postQuestion,
   updateQuestion,
-  deleteQuestion
+  deleteQuestion,
+  search
 };
