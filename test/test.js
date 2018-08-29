@@ -120,7 +120,20 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .request(app)
       .get("/api/v1/questions")
       .then(res => {
-        //console.log(res.body);
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an("array");
+      });
+  });
+
+  it("should be able to search for questions", () => {
+    let search = {
+      search: "class to javascript"
+    };
+    return chai
+      .request(app)
+      .post("/api/v1/questions/search")
+      .send(search)
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("array");
       });

@@ -14,10 +14,18 @@ const getQuestion = params => {
   return client.runQuery(query, data);
 };
 
-const allQuestions = params => {
-  const query = "SELECT a.*,b.name FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby)";
-  return client.runQuery(query);
+const allQuestions = (option = "", data = []) => {
+  const query =
+    "SELECT a.title,a.qnsid,a.askedate,b.name, (SELECT COUNT(ansid) FROM answers_tb WHERE questionid=a.qnsid) AS ans " +
+    "FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby) " +
+    option;
+  return client.runQuery(query, data);
 };
+
+const search = params => {
+  return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1)", [params]);
+};
+
 const get_Question = params => {
   const query = "SELECT a.* FROM questions_tb a  WHERE a.qnsid=$1";
   const data = [params];
@@ -42,5 +50,6 @@ module.exports = {
   getQuestion,
   updateQuestion,
   deleteQuestion,
-  get_Question
+  get_Question,
+  search
 };

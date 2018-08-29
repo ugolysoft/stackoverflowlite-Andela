@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sign Up</title>
+        <title>Post Question</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
 		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
     </head>
     <body>
-        <header>
+         <header>
             <div class="container">
                 <div class="row-container">
                     <div class="col-half">
@@ -17,7 +17,7 @@
                     <nav class="col-half align-right">
                         <ul>
                             <li><a href="signin.html">Login</a></li>
-                            <li class="active"><a href="signup.html">Sign Up</a></li>
+                            <li><a href="signup.html">Sign Up</a></li>
                         </ul>
                     </nav><br>
                 </div><br class="clear">
@@ -26,33 +26,31 @@
             <div id="nav-container">
                     <nav class="align-center">
                         <ul>
-                            <li ><a href="../index.html">Home</a></li>
+                            <li ><a href="index.html">Home</a></li>
                             <li><a href="profile.html">User Page</a></li>
                             <li><a href="questions.html">Questions</a></li>
-                            <li><a href="postquestion.html">Ask</a></li>
+                            <li class="active"><a href="postquestion.html">Ask</a></li>
                         </ul>
                    </nav>
                 </div>
         </header>
         <section id="body">
+           
             <div class="container">
-                <div id="entry-form"><br /><br /><br /><br />
-                    <form>
-                        <span class="align-center block"><b>Sign Up</b></span><br><br>
-                        <input type="text" name="name" id="name" placeholder="Full Name" /><div id="errname" class="error"></div>
-                        <input type="email" name="email" id="email" placeholder="Email" /><div id="erremail" class="error"></div>
-                        <input type="password" name="password" id="password" placeholder="Password" /><div id="errpass" class="error"></div><br>
-                        <br>
-                        <input type="button" id="signupbtn" class="btn" value="Sign Up"/>&nbsp;&nbsp;&nbsp;
-                        Already have an account? <a href="signin.html">Sign In!</a>
-                    </form>
-                    
-                </div>
+            <br><br>
+            <div>
+                <b>Title</b>
+                <input type="text" name="title" id="title" placeholder="What is title of Your question? Be specific" class="input-box"/><br>
+                <b>Body</b>
+                <textarea name="question" id="question" placeholder="Type in your question" class="input-box" rows="15"></textarea>
+                <br /><br />
+                <input type="button" id="signupbtn" class="btn" value="Post Your Question"/>
             </div>
+            <br><br>
+        </div>
         </section>
         <footer>
             Copyright © 2018. All Right Reserved
         </footer>
-   
     </body>
 </html>
