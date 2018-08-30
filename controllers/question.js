@@ -1,6 +1,7 @@
 var serviceQns = require("../services/question");
 var errorMsg = require("../services/error");
 const authService = require("../services/auth");
+const validator = require("../services/validator");
 
 function getAllQuestions(req, res) {
   return serviceQns
@@ -12,41 +13,41 @@ function getAllQuestions(req, res) {
       res.send(errorMsg.error(err));
     });
 }
+
 function getQuestion(req, res) {
-  return serviceQns
-    .getQuestion(req.params.id)
-    .then(results => {
-      let ans = [],
-        qns = {};
-      if (results.length > 0) {
-        results.forEach(value => {
-          qns = {
-            title: value.title,
-            body: value.question,
-            askeddby: value.name,
-            on: value.askeddate
-          };
-          if (value.answer != null && value.answer != "") {
-            ans.push({
-              body: value.answer,
-              answeredby: value.answeredby,
-              answerdate: value.ansdate,
-              id: value.ansid,
-              votes: value.vote,
-              comments: value.comments
-            });
-          }
-        });
-      }
-      res.send({ question: qns, answers: ans });
-    })
-    .catch(err => {
-      res.send(errorMsg.error(err));
-    });
+  if (validator.validDatatype(req.params.id, "integer")) {
+    return serviceQns
+      .getQuestion(req.params.id)
+      .then(results => {
+        res.send(results);
+      })
+      .catch(err => {
+        res.send(errorMsg.error(err));
+      });
+  }
+  return res.send(errorMsg.info("Operation failed. Wrong data type; valid datatype integer"));
+}
+
+function myQuestions(req, res) {
+  if (authService.checkAuth(req)) {
+    return serviceQns
+      .myQuestions(req.user.id)
+      .then(execute => {
+        res.send(execute);
+      })
+      .catch(err => {
+        res.send(errorMsg.error(err));
+      });
+  }
+  return res.send(errorMsg.info("Operation failed. No token"));
 }
 
 function postQuestion(req, res) {
-  if (authService.checkAuth(req) && req.body.body != "" && req.body.title != "") {
+  if (
+    authService.checkAuth(req) &&
+    validator.notEmpty(req.body.body) &&
+    validator.notEmpty(req.body.title)
+  ) {
     return serviceQns
       .postQuestion(req)
       .then(execute => {
@@ -64,25 +65,30 @@ function postQuestion(req, res) {
 }
 
 function search(req, res) {
-  if (req.body.search != "") {
+  if (validator.notEmpty(req.body.search)) {
     return serviceQns
       .search(req.body.search)
       .then(results => {
-        res.send([{ send: req.body.search, ans: results }]);
+        res.send(results);
       })
       .catch(err => {
         res.send(errorMsg.error(err));
       });
   }
-  return res.send(errorMsg.info("search field is empty"));
+  return res.send(errorMsg.info("Operation failed. Search field is empty"));
 }
 
 function updateQuestion(req, res) {
-  if (authService.checkAuth(req) && (req.body.title != "" && req.body.body != "")) {
+  if (
+    authService.checkAuth(req) &&
+    validator.notEmpty(req.body.title) &&
+    validator.notEmpty(req.body.body) &&
+    validator.validDatatype(req.params.id, "integer")
+  ) {
     let params = {
       id: req.params.id,
-      body: req.body.body,
-      title: req.body.title,
+      body: validator.htmlSpecialCharacter(req.body.body),
+      title: validator.htmlSpecialCharacter(req.body.title),
       userid: req.user.id
     };
     return serviceQns
@@ -91,27 +97,30 @@ function updateQuestion(req, res) {
         if (execute.length > 0) {
           return res.send(errorMsg.info("update successful", true, execute));
         } else {
-          return res.send(errorMsg.info("You cannot update this question"));
+          return res.send(errorMsg.info("Operation failed. You cannot update this question"));
         }
       })
       .catch(err => {
-        res.send(errorMsg.error(err, "Fail to save question. try again later. "));
+        res.send(errorMsg.error(err));
       });
   }
+  return res.send(errorMsg.info("Operation failed. Empty box(es)"));
 }
 
 function deleteQuestion(req, res) {
-  if (authService.checkAuth(req)) {
+  if (authService.checkAuth(req) && validator.validDatatype(req.params.id, "integer")) {
     return serviceQns
       .deleteQuestion(req.params.id, req.user.id)
       .then(execute => {
         if (execute.length > 0) res.send(errorMsg.info("Operation was successful", true, execute));
-        else res.send(errorMsg.info("You cannot delete question you did not post"));
+        else
+          res.send(errorMsg.info("Operation failed. You cannot delete question you did not post"));
       })
       .catch(err => {
-        res.send(errorMsg.error(err, "Fail to delete question. try again later. "));
+        res.send(errorMsg.error(err));
       });
   }
+  return res.send(errorMsg.info("Operation failed. Wrong data type"));
 }
 
 module.exports = {
@@ -120,5 +129,6 @@ module.exports = {
   postQuestion,
   updateQuestion,
   deleteQuestion,
-  search
+  search,
+  myQuestions
 };

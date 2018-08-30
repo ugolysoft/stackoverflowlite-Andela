@@ -1,8 +1,13 @@
 const client = require("../db");
+const validator = require("../services/validator");
 
 const postQuestion = params => {
   const query = "INSERT INTO questions_tb(title,question,askedby) VALUES($1, $2, $3) RETURNING * ";
-  const data = [params.body.title, params.body.body, parseInt(params.user.id)];
+  const data = [
+    validator.htmlSpecialCharacter(params.body.title),
+    validator.htmlSpecialCharacter(params.body.body),
+    parseInt(params.user.id)
+  ];
   return client.runQuery(query, data);
 };
 const getQuestion = params => {
@@ -22,6 +27,12 @@ const allQuestions = (option = "", data = []) => {
   return client.runQuery(query, data);
 };
 
+const myQuestions = params => {
+  return client.runQuery("SELECT title,askedate,qnsid FROM questions_tb WHERE askedby=$1", [
+    params
+  ]);
+};
+
 const search = params => {
   return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1)", [params]);
 };
@@ -34,7 +45,12 @@ const get_Question = params => {
 const updateQuestion = params => {
   const query =
     "UPDATE questions_tb SET question=$1,title=$2 WHERE qnsid=$3 AND askedby=$4 RETURNING * ";
-  const data = [params.body, params.title, params.id, params.userid];
+  const data = [
+    validator.htmlSpecialCharacter(params.body),
+    validator.htmlSpecialCharacter(params.title),
+    params.id,
+    params.userid
+  ];
   return client.runQuery(query, data);
 };
 
@@ -51,5 +67,6 @@ module.exports = {
   updateQuestion,
   deleteQuestion,
   get_Question,
-  search
+  search,
+  myQuestions
 };

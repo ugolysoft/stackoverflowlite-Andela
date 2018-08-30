@@ -30,16 +30,14 @@ describe("Test stackoverflowlite RESTAPI", () => {
     };
     return chai
       .request(app)
-      .post("/api/v1/register")
+      .post("/api/v1/auth/signup")
       .send(user)
       .then(res => {
         expect(res).to.have.status(200);
         if (res.body.success) {
           expect(res.body.message).to.include("Resgistration was successful");
         } else {
-          expect(res.body.message).to.equal(
-            `Registration failed. Email '${user.email}' already exist.`
-          );
+          expect(res.body.message).to.include("Operation failed");
         }
       });
   });
@@ -51,12 +49,14 @@ describe("Test stackoverflowlite RESTAPI", () => {
     };
     return chai
       .request(app)
-      .post("/api/v1/login")
+      .post("/api/v1/auth/login")
       .send(user)
       .then(res => {
         expect(res).to.have.status(200);
         if (!res.body.success) {
-          expect(res.body.message).to.include("Wrong");
+          if (typeof res.body.data === "undefined")
+            expect(res.body.message).to.include("Operation failed");
+          else expect(res.body.message).to.include("Wrong email or password");
         } else {
           token = res.body.token;
 
@@ -104,7 +104,6 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .set("token", token)
       .send(ans)
       .then(res => {
-        //console.log(res.body);
         if (!res.body.success) {
           expect(res.body.message).to.include("Operation failed");
         } else {
@@ -127,15 +126,19 @@ describe("Test stackoverflowlite RESTAPI", () => {
 
   it("should be able to search for questions", () => {
     let search = {
-      search: "class to javascript"
+      search: "say world"
     };
     return chai
       .request(app)
       .post("/api/v1/questions/search")
       .send(search)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an("array");
+        if (typeof res.body.success !== "undefined" && !res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("array");
+        }
       });
   });
 
@@ -144,8 +147,12 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .request(app)
       .get("/api/v1/questions/" + questionid)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an("object");
+        if (typeof res.body.success !== "undefined" && !res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("array");
+        }
       });
   });
 
@@ -155,7 +162,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
     };
     return chai
       .request(app)
-      .post("/api/v1/questions/" + questionid + "/answers/" + answerid)
+      .post("/api/v1/questions/answers/votes/" + answerid)
       .set("token", token)
       .send(vote)
       .then(res => {
@@ -175,11 +182,10 @@ describe("Test stackoverflowlite RESTAPI", () => {
     };
     return chai
       .request(app)
-      .post("/api/v1/questions/answers/" + answerid)
+      .post("/api/v1/questions/answers/comments/" + answerid)
       .set("token", token)
       .send(comment)
       .then(res => {
-        //console.log(res.body);
         if (!res.body.success) {
           expect(res.body.message).to.include("Operation failed");
         } else {
@@ -200,8 +206,12 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .set("token", token)
       .send(edit)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an("object");
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("object");
+        }
       });
   });
 
@@ -211,8 +221,27 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .put("/api/v1/questions/" + questionid + "/answers/" + answerid)
       .set("token", token)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an("object");
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("object");
+        }
+      });
+  });
+
+  it("logged in user should be able to view all his/her questions", () => {
+    return chai
+      .request(app)
+      .get("/api/v1/users/questions/")
+      .set("token", token)
+      .then(res => {
+        if (typeof res.body.success !== "undefined" && !res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("array");
+        }
       });
   });
 
@@ -222,8 +251,12 @@ describe("Test stackoverflowlite RESTAPI", () => {
       .delete("/api/v1/questions/" + questionid)
       .set("token", token)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.an("object");
+        if (!res.body.success) {
+          expect(res.body.message).to.include("Operation failed");
+        } else {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an("object");
+        }
       });
   });
 });

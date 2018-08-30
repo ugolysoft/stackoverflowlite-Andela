@@ -14,19 +14,21 @@ router.get("/api/v1/questions", qns.getAllQuestions);
 
 router.get("/api/v1/questions/:id", qns.getQuestion);
 
+router.get("/api/v1/users/questions", qns.myQuestions);
+
 router.post("/api/v1/questions", qns.postQuestion);
 
 router.delete("/api/v1/questions/:id");
 
 router.post("/api/v1/questions/:questionid/answers", ans.postAnswer);
 
-router.post("/api/v1/register", auth.register);
+router.post("/api/v1/auth/signup", auth.register);
 
-router.post("/api/v1/login", auth.login);
+router.post("/api/v1/auth/login", auth.login);
 
-router.post("/api/v1/questions/:questionid/answers/:id", ans.vote);
+router.post("/api/v1/questions/answers/votes/:id", ans.vote);
 
-router.post("/api/v1/questions/answers/:id", ans.comment);
+router.post("/api/v1/questions/answers/comments/:id", ans.comment);
 
 router.post("/api/v1/questions/search", qns.search);
 

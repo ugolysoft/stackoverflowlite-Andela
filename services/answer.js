@@ -1,9 +1,14 @@
 const client = require("../db");
+const validator = require("../services/validator");
 
 const postAnswer = params => {
   const query =
     "INSERT INTO answers_tb(answer,questionid,answeredby) VALUES($1, $2, $3) RETURNING * ";
-  const data = [params.body.body, params.params.questionid, params.user.id];
+  const data = [
+    validator.htmlSpecialCharacter(params.body.body),
+    params.params.questionid,
+    params.user.id
+  ];
   return client.runQuery(query, data).then(user => {
     return user;
   });
@@ -26,7 +31,7 @@ const vote = params => {
 const addComment = params => {
   const query =
     "INSERT INTO comments_tb(message, anscomment, commentedby) VALUES($1, $2, $3) RETURNING * ";
-  const data = [params.body.body, params.params.id, params.user.id];
+  const data = [validator.htmlSpecialCharacter(params.body.body), params.params.id, params.user.id];
   return client.runQuery(query, data).then(comment => {
     return comment;
   });
