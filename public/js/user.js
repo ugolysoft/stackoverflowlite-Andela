@@ -7,7 +7,7 @@
   }
 })();
 
-//static
+
 class _use {
   static signup() {
     if (_format.validateInput("box")) {
@@ -16,32 +16,49 @@ class _use {
         email: _format.htmlSpecialCharacter(document.getElementById("email").value),
         password: document.getElementById("password").value
       };
-      const req = new getData("http://localhost:3000/api/v1/register/", _use.message, "POST", data);
+      const req = new getData(
+        "http://localhost:3000/api/v1/register/",
+        _use.onSignup,
+        "POST",
+        data
+      );
       req.request();
     }
   }
-  static message(data) {
-    alert("hello");
+  static onSignup(data) {
+    if (typeof data == "string") alert(data);
+    else if (typeof data == "object") {
+      if (Array.isArray(data)) {
+      }
+    }
   }
   static questions(data) {
     const qnstb = document.getElementById("questionstb");
     let rows = "";
-    if (Array.isArray(data)) {
-      data.forEach(value => {
-        rows += `<tr><td><span class="inline-block unpad align-center">
-        ${value.ans} ans</span></td>
-        <td><a class="undecorated" onclick="_use.answer('${value.qnsid}')"><b>
-        ${value.title}</b></a><p class="unpad align-right">
-        <b>${value.name}</b> <span class="inline-table">${value.askedate}</span></p></td></tr>`;
-      });
-      qnstb.innerHTML = rows;
-    }
+    data.forEach(value => {
+      rows += `<tr><td><span class="inline-block unpad align-center">
+      ${value.ans} ans</span></td>
+      <td><a class="undecorated" onclick="_use.answer('${value.qnsid}')"><b>
+      ${value.title}</b></a><p class="unpad align-right">
+      <b>${value.name}</b> <span class="inline-table">${value.askedate}</span></p></td></tr>`;
+    });
+    qnstb.innerHTML = rows;
   }
+
+  static objectResult(data) {}
 }
 
 //abstract
 class getData {
-  constructor(url, _fn, method = "GET", body = "", headers = "") {
+  constructor(
+    url,
+    _fn,
+    method = "GET",
+    body = "",
+    headers = {
+      "Content-Type": "application/json"
+    }
+  ) {
     this.url = url;
     this.fn = _fn;
     this.method = method;
@@ -51,7 +68,7 @@ class getData {
 
   request() {
     const _fetch =
-      this.method === "GET"
+      this.method == "GET"
         ? fetch(this.url)
         : fetch(this.url, {
             method: this.method,
@@ -62,11 +79,11 @@ class getData {
       .then(res => res.json())
       .then(data => {
         console.log(JSON.stringify(data));
-        this.fn(data);
+        _format.verifydata(data, this.fn);
       })
       .catch(err => {
         console.log(err);
-        return "Oops! Something went wrong. Please try again later";
+        alert("Oops! Something went wrong. Please try again later");
       });
   }
 }
@@ -99,5 +116,13 @@ class _format {
   static validEmail(email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+  }
+
+  static verifydata(data, next) {
+    if (typeof data == "string") alert(data);
+    else if (typeof data == "object") {
+      if (Array.isArray(data)) next(data);
+      else _use.objectResult(data);
+    }
   }
 }

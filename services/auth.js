@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../db");
+var errorMsg = require("../services/error");
 
 const authenticate = params => {
   const query = "SELECT * FROM users_tb WHERE email=$1";
@@ -8,7 +9,7 @@ const authenticate = params => {
   return client.runQuery(query, data).then(user => {
     if (Array.isArray(user) && user.length > 0) {
       if (!bcrypt.compareSync(params.password || "", user[0].password))
-        return { success: false, message: "Wrong password" };
+        return errorMsg.info("Wrong email or password");
       const userData = {
         name: user[0].name,
         email: user[0].email,

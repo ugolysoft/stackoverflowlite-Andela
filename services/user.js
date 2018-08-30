@@ -1,4 +1,5 @@
 const client = require("../db");
+const validator = require("../services/validator");
 
 const getUserByLogin = params => {
   const query = "SELECT * FROM users_tb WHERE email=$1";
@@ -12,7 +13,12 @@ const getUserByLogin = params => {
 const addUser = params => {
   const query =
     "INSERT INTO users_tb(name,email,password) SELECT $1, $2, $3 WHERE NOT EXISTS(SELECT id FROM users_tb WHERE email=$4 LIMIT 1) RETURNING *";
-  const data = [params.name, params.email, params.password, params.email];
+  const data = [
+    validator.htmlSpecialCharacter(params.name),
+    validator.htmlSpecialCharacter(params.email),
+    validator.htmlSpecialCharacter(params.password),
+    validator.htmlSpecialCharacter(params.email)
+  ];
   return client.runQuery(query, data);
 };
 
