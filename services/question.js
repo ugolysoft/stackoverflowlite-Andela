@@ -21,9 +21,8 @@ const getQuestion = params => {
 
 const allQuestions = (option = "", data = []) => {
   const query =
-    "SELECT a.title,a.qnsid,a.askedate,b.name, (SELECT COUNT(ansid) FROM answers_tb WHERE questionid=a.qnsid) AS ans " +
-    "FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby) " +
-    option;
+    `SELECT a.title,a.qnsid,a.askedate,b.name, (SELECT COUNT(ansid) FROM answers_tb WHERE questionid=a.qnsid) AS ans ` +
+    `FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby) ${option}  ORDER BY ans DESC`;
   return client.runQuery(query, data);
 };
 
@@ -34,7 +33,7 @@ const myQuestions = params => {
 };
 
 const search = params => {
-  return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1)", [params]);
+  return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1) ", [params]);
 };
 
 const get_Question = params => {
