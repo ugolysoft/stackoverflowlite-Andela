@@ -1,13 +1,13 @@
 "use strict";
-const chai = require("chai");
-const expect = require("chai").expect;
+import chai from "chai";
+import expect from ("chai").expect;
+import app from "../server";
+import db  from "../db";
+import jwt from "jsonwebtoken";
+
 chai.use(require("chai-http"));
 
-const app = require("../server");
-const db = require("../db");
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 let token = "",
   questionid = "",

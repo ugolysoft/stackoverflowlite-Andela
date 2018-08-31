@@ -2,10 +2,10 @@
   "name": "stackoverflowlite-andela",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "starter.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --exit",
-    "start": "node index.js"
+    "start": "node starter.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,8 @@
     "underscore": "^1.9.1"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "eslint": "^5.4.0",

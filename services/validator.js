@@ -19,16 +19,38 @@ const htmlSpecialCharacter = text => {
 
 const validDatatype = (value, datatype = "integer") => {
   if (datatype === "integer") {
-    return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))
-      ? true
-      : false;
+    return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
   } else if (typeof value == datatype) return true;
   return false;
+};
+
+const checkValidInputes = (_object, validateEmail = false, expectedInteger = false) => {
+  let valid = true,
+    data = [];
+  for (var key in _object) {
+    if (_object.hasOwnProperty(key)) {
+      if (!notEmpty(_object[key])) {
+        data.push(`${key} must not be empty`);
+        valid = false;
+      } else if (key == "email" && validateEmail) {
+        if (!validEmail(_object[key])) {
+          data.push(`invalid ${key} '${_object[key]}'`);
+          valid = false;
+        }
+      }
+      if (key.indexOf("id") > -1 && !validDatatype(_object[key])) {
+        data.push(`invalid datatype for ${key}; required data type is integer`);
+      }
+    }
+  }
+  _object.data = data;
+  return valid;
 };
 
 module.exports = {
   notEmpty,
   validEmail,
   htmlSpecialCharacter,
-  validDatatype
+  validDatatype,
+  checkValidInputes
 };

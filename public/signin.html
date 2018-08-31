@@ -8,41 +8,42 @@
 		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
     </head>
     <body>
-        <header>
-            <div class="container">
-                <div class="row-container">
-                    <div class="col-half">
-                        <h1>StackOverflow-Lite</h1>
+            <header>
+                    <div class="container">
+                        <div class="row-container">
+                            <div class="col-half">
+                                <h1>StackOverflow-Lite</h1>
+                            </div>
+                            <nav class="col-half align-right">
+                                <ul>
+                                    <li class="for-authorizeduser hidden user-nav"><a onclick="_use.logout();">logout</a></li>
+                                    <li class="active" class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
+                                    <li class="for-anonymous hidden user-nav"><a href="signup.html">Sign Up</a></li>
+                                </ul>
+                            </nav><br>
+                        </div><br class="clear">
+                        
                     </div>
-                    <nav class="col-half align-right">
-                        <ul>
-                            <li class="active"><a href="signin.html">Login</a></li>
-                            <li><a href="signup.html">Sign Up</a></li>
-                        </ul>
-                    </nav><br>
-                </div><br class="clear">
-                
-            </div>
-            <div id="nav-container">
-                    <nav class="align-center">
-                        <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><a href="profile.html">User Page</a></li>
-                            <li><a href="questions.html">Questions</a></li>
-                            <li><a href="postquestion.html">Ask</a></li>
-                        </ul>
-                   </nav>
-                </div>
-        </header>
+                    <div id="nav-container">
+                            <nav class="align-center">
+                                <ul>
+                                    <li ><a href="index.html">Home</a></li>
+                                    <li class="for-authorizeduser hidden user-nav"><a href="profile.html">User Page</a></li>
+                                    <li><a href="questions.html">Questions</a></li>
+                                    <li class="for-authorizeduser hidden user-nav"><a href="postquestion.html">Ask</a></li>
+                                </ul>
+                           </nav>
+                        </div>
+                </header>
         <section id="body">
             <div class="container">
                 <div id="entry-form"><br /><br /><br /><br />
                     <form >
                         <span class="align-center block"><b>Sign In</b></span><br><br>
-                        <input type="email" name="email" id="email" placeholder="Email"/><br>
-                        <input type="password" name="password" id="password" placeholder="Password"/>
+                        <input type="email" class="box" name="email" id="email" placeholder="Email"/><br>
+                        <input type="password" class="box" name="password" id="password" placeholder="Password"/>
                         <br><br>
-                        <input type="button" class="btn"  value="Login"/>&nbsp;&nbsp;&nbsp;
+                        <input type="button" class="btn" onclick="_use.login();"  value="Login"/>&nbsp;&nbsp;&nbsp;
                         Don't have an account yet? <a href="signup.html">Sign Up!</a>
                     </form>
 
@@ -55,4 +56,5 @@
         </footer>
         
     </body>
+    <script src="js/user.js"></script>
 </html>

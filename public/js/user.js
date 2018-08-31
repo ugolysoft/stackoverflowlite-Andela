@@ -1,14 +1,53 @@
 (function() {
   if (document.getElementById("questionstb")) {
     setTimeout(function() {
-      const qns = new getData("http://localhost:3000/api/v1/questions/", _use.questions);
+      const qns = new getData("/api/v1/questions/", _use.questions);
       qns.request();
-    }, 1000);
+    }, 500);
+  }
+
+  setTimeout(() => {
+    const user = _use.getCookie("statckuser");
+    const nav = document.getElementsByClassName("user-nav");
+    if (user != "") {
+      for (var val of nav) {
+        if (val.classList.contains("for-authorizeduser"))
+          val.className = "for-authorizeduser user-nav";
+      }
+    } else {
+      for (var val of nav) {
+        if (val.classList.contains("for-anonymous")) val.className = "for-anonymous user-nav";
+      }
+    }
+    if (document.getElementById("questionviewer")) {
+      const questionid = _use.getCookie("questionid");
+      if (questionid != "") {
+        const qns = new getData(`/api/v1/questions/${questionid}`, _use.viewquestion);
+        qns.request();
+      }
+    }
+  }, 200);
+
+  if (document.getElementsByClassName("delete")) {
+    var elem = document.getElementsByClassName("delete");
+    for (var i = 0; i < elem.length; i++) {
+      elem[i].addEventListener("click", function() {
+        var row = this.parentNode.parentNode;
+        var q = row.getElementsByTagName("a")[0].childNodes[0].innerHTML;
+        var con = confirm('Are you sure you want to delete this quwstion: "' + q + '"?');
+        if (con) {
+          var parent = this.parentNode.parentNode.parentNode;
+          var rowindex = row.rowIndex;
+          parent.deleteRow(rowindex);
+        }
+      });
+    }
   }
 })();
 
-
 class _use {
+  static viewquestion(m) {}
+
   static signup() {
     if (_format.validateInput("box")) {
       const data = {
@@ -16,39 +55,95 @@ class _use {
         email: _format.htmlSpecialCharacter(document.getElementById("email").value),
         password: document.getElementById("password").value
       };
-      const req = new getData(
-        "http://localhost:3000/api/v1/register/",
-        _use.onSignup,
-        "POST",
-        data
-      );
+      const req = new getData("/api/v1/auth/signup/", null, "POST", data);
       req.request();
     }
   }
-  static onSignup(data) {
-    if (typeof data == "string") alert(data);
-    else if (typeof data == "object") {
-      if (Array.isArray(data)) {
-      }
+
+  static login() {
+    if (_format.validateInput("box")) {
+      const data = {
+        email: _format.htmlSpecialCharacter(document.getElementById("email").value),
+        password: document.getElementById("password").value
+      };
+      const req = new getData("/api/v1/auth/login/", _use.onlogin, "POST", data);
+      req.request();
     }
   }
+
+  static saveQuestion($this) {
+    if (_format.validateInput("input-box")) {
+      $this.className += " hidden";
+      const data = {
+        title: _format.htmlSpecialCharacter(document.getElementById("title").value),
+        body: _format.htmlSpecialCharacter(document.getElementById("question").value)
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        token: _use.getCookie("statckuser")
+      };
+      const req = new getData("/api/v1/questions/", null, "POST", data, headers);
+      req.request();
+    }
+  }
+
+  static onlogin(data) {
+    _use.setCookie(data.token);
+  }
+
   static questions(data) {
     const qnstb = document.getElementById("questionstb");
     let rows = "";
     data.forEach(value => {
       rows += `<tr><td><span class="inline-block unpad align-center">
       ${value.ans} ans</span></td>
-      <td><a class="undecorated" onclick="_use.answer('${value.qnsid}')"><b>
+      <td><a class="undecorated" onclick="_use.viewQuestion('${value.qnsid}')" ><b>
       ${value.title}</b></a><p class="unpad align-right">
       <b>${value.name}</b> <span class="inline-table">${value.askedate}</span></p></td></tr>`;
     });
     qnstb.innerHTML = rows;
   }
 
-  static objectResult(data) {}
+  static viewQuestion(id) {
+    _use.setCookie(id, "questionid");
+    window.location.href = "reader.html";
+  }
+
+  static setCookie(cvalue, name = "statckuser") {
+    alert(cvalue);
+    const d = new Date();
+    d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + cvalue + ";" + expires + ";path=/";
+    window.location.href = "index.html";
+  }
+
+  static getCookie(cname) {
+    const name = cname + "=";
+    const ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == " ") {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  static search() {
+    if (_format.validateInput("input-box")) {
+      const data = {
+        search: _format.htmlSpecialCharacter(document.getElementById("searchtext").value)
+      };
+      const req = new getData("/api/v1/questions/search/", _use.questions, "POST", data);
+      req.request();
+    }
+  }
 }
 
-//abstract
 class getData {
   constructor(
     url,
@@ -75,6 +170,7 @@ class getData {
             body: JSON.stringify(this.body),
             headers: this.headers
           });
+
     _fetch
       .then(res => res.json())
       .then(data => {
@@ -122,7 +218,9 @@ class _format {
     if (typeof data == "string") alert(data);
     else if (typeof data == "object") {
       if (Array.isArray(data)) next(data);
-      else _use.objectResult(data);
+      else if (data.data == "") {
+        alert(`Success\n${data.success}\n\nMessage\n${data.message}`);
+      } else next(data.data);
     }
   }
 }
