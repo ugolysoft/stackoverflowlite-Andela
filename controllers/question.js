@@ -35,7 +35,7 @@ const getQuestion = (req, res) => {
             if (value.answer != null && value.answer != "") {
               ans.push({
                 answer: value.answer,
-                answeredby: value.answeredby,
+                answeredby: value.ansby,
                 createddate: value.ansdate,
                 id: value.ansid,
                 votes: value.vote,
