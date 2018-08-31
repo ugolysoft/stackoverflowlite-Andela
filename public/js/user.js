@@ -66,20 +66,22 @@ class _use {
         !isNaN(parseInt(ans.votes, 10))
           ? ans.votes
           : 0;
-      q += `<tr><td><div class="align-center"><span onclick="vote(1,this)" class="upvote block">
+      q += `<tr><td><div class="align-center">
+      <span onclick="_use.vote(1,'${ans.id}');" class="upvote block">
                     </span><p class="vote-score">${parseInt(
                       _vote
-                    )}</p><span onclick="vote(-1,this)" class="downvote block">
-                    </span></div></td><td>${
-                      ans.answer
-                    }<p class="unpad align-right"><b>Roy Nnanna</b>
+                    )}</p><span onclick="_use.vote(-1,'${ans.id}')" class="downvote block">
+                    </span></div></td><td>${ans.answer}<p class="unpad align-right"><b>${
+        ans.answeredby
+      }</b>
                      <span class="inline-table">${
                        ans.createddate
                      }</span></p><br><span class="caption">Comments</span>
+                     <div class="comments-container">${_use.userComments(ans.comments)}
                       <div class="comments-container"><div><span class="link-btn" onclick="_use.addcomment(this,${
                         ans.id
                       })">
-                      Add comment</span></div></div></td></tr>`;
+                      Add comment</span></div></div></div></td></tr>`;
     }
     q += `</table><br /> <b>Body</b><textarea name="answer" id="answer" placeholder="Type in your answer"  class="input-box" rows="15">
     </textarea><br /><br /><input type="button" id="signupbtn" class="btn" onclick="_use.postAnswer('${
@@ -89,6 +91,32 @@ class _use {
     document.getElementById("questionviewer").innerHTML = q;
   }
 
+  static vote(num, id) {
+    const data = {
+      vote: num
+    };
+    const headers = {
+      "Content-Type": "application/json",
+      token: _use.getCookie("statckusers")
+    };
+    const req = new getData(
+      "/api/v1/questions/answers/votes/" + parseInt(id),
+      _use.reloadPage,
+      "POST",
+      data,
+      headers
+    );
+    req.request();
+  }
+  static userComments(comments) {
+    let c = "";
+    for (var com of comments) {
+      c += `<div class="comment">${com.message}<p class="unpad align-right">
+      <b>${com.name}</b> <span class="inline-table">${com.date}</span></p>
+      </div>`;
+    }
+    return c;
+  }
   static addcomment(element, id) {
     let i = `<textarea class='input-box'  placeholder='Type in your comment'></textarea><br>`;
     i += `<input type='button' value='Post Your Comment' onclick='_use.postcomment(this,${id})' class='btn'>`;
@@ -96,9 +124,8 @@ class _use {
   }
 
   static postcomment($this, id) {
-    var parent = element.parentElement;
+    var parent = $this.parentElement;
     var msg = parent.childNodes[0].value;
-    alert(msg);
     if (msg != "") {
       $this.className += " hidden";
       const data = {
