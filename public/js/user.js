@@ -46,7 +46,14 @@
 })();
 
 class _use {
-  static viewquestion(m) {}
+  static viewquestion(m) {
+    let q = `<h3>${m.question.title}</h3><div class="">${m.question.question}
+          <p class="unpad align-right"><b>${m.question.askeddby}</b> <span class="inline-table">
+          ${m.question.createddate}</span></p></div><br><span class="caption">2 Answers</span>
+          <table class="table-bottom-line table-topalign">`;
+
+    document.getElementById("questionviewer").innerHTML = q;
+  }
 
   static signup() {
     if (_format.validateInput("box")) {

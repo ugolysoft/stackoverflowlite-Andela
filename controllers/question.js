@@ -1,7 +1,7 @@
-import serviceQns from "../services/question";
-import errorMsg from "../services/error";
-import authService from "../services/auth";
-import validator from "../services/validator";
+const serviceQns = require( "../services/question");
+const errorMsg = require( "../services/error");
+const authService = require( "../services/auth");
+const validator = require( "../services/validator");
 
 const getAllQuestions = (req, res) => {
   return serviceQns
@@ -38,8 +38,7 @@ const getQuestion = (req, res) => {
                 answeredby: value.answeredby,
                 createddate: value.ansdate,
                 id: value.ansid,
-                votes: value.vote,
-                comments: answerComments(value.comments)
+                votes: value.vote
               });
             }
           }
@@ -84,13 +83,12 @@ const myQuestions = (req, res) => {
 };
 
 const postQuestion = (req, res) => {
-  //&& validator.notEmpty(req.body.body) && validator.notEmpty(req.body.title)
   if (authService.checkAuth(req)) {
     if (validator.checkValidInputes(req.body)) {
       return serviceQns
         .postQuestion(req)
         .then(question => {
-          if (question.length > 0) return res.send(errorMsg.info("Question saved", true));
+          if (question.length > 0) return res.send(errorMsg.info("Question saved", true, question));
           return res.send(errorMsg.info("You have asked a question with this title"));
         })
         .catch(err => {
@@ -117,7 +115,6 @@ const search = (req, res) => {
 };
 
 const updateQuestion = (req, res) => {
-  //validator.notEmpty(req.body.title) && validator.notEmpty(req.body.body) && validator.validDatatype(req.params.id, "integer")
   if (authService.checkAuth(req)) {
     let data = {
       id: req.params.id,

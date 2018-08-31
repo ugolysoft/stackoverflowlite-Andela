@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import client from "../db";
-import errorMsg from "../services/error";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const client = require("../db");
+const errorMsg = require("../services/error");
 
 const authenticate = data => {
   const query = "SELECT * FROM users_tb WHERE email=$1";

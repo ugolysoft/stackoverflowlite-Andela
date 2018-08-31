@@ -1,5 +1,5 @@
-import client from "../db";
-import validator from "../services/validator";
+const client = require("../db");
+const validator = require("../services/validator");
 
 const postQuestion = question => {
   const query =

@@ -1,6 +1,6 @@
-import client from "../db";
-import validator from "../services/validator";
-import bcrypt from "bcrypt";
+const client = require("../db");
+const validator = require("../services/validator");
+const bcrypt = require("bcrypt");
 
 const getUserByLogin = email => {
   const query = "SELECT * FROM users_tb WHERE email=$1";

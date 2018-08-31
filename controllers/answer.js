@@ -1,11 +1,9 @@
-import service from "../services/answer";
-import errorMsg from "../services/error";
-import authService from "../services/auth";
-import validator from "../services/validator";
+const service = require( "../services/answer");
+const errorMsg = require( "../services/error");
+const authService = require( "../services/auth");
+const validator = require( "../services/validator");
 
 const postAnswer = (req, res) => {
-  //validator.notEmpty(req.body.body) &&
-  //validator.validDatatype(req.params.questionid)
   let data = { questionid: req.params.questionid, answer: req.body.body };
   if (authService.checkAuth(req)) {
     if (validator.checkValidInputes(data)) {

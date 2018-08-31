@@ -1,7 +1,7 @@
-import authService from "../services/auth";
-import userService from "../services/user";
-import errorMsg from "../services/error";
-import validator from "../services/validator";
+const authService = require("../services/auth");
+const userService = require("../services/user");
+const errorMsg = require("../services/error");
+const validator = require("../services/validator");
 
 const login = (req, res) => {
   if (validator.checkValidInputes(req.body)) {

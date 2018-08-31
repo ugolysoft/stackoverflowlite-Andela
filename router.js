@@ -1,9 +1,9 @@
-import express from "express";
-import bodyParser from "body-parser";
+const express = require( "express");
+const bodyParser = require( "body-parser");
 
-import qns from "./controllers/question";
-import auth from "./controllers/auth";
-import ans from "./controllers/answer";
+const qns = require( "./controllers/question");
+const auth = require( "./controllers/auth");
+const ans = require( "./controllers/answer");
 
 const router = express.Router();
 
