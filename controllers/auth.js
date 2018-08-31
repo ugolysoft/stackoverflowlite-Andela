@@ -9,7 +9,7 @@ const login = (req, res) => {
       .authenticate(req.body)
       .then(result => {
         if (typeof result.token === "undefined") res.status(401).send(result);
-        res.send(result);
+        res.send(errorMsg.info("login successful", true, result));
       })
       .catch(err => {
         res.send(errorMsg.error(err));

@@ -42,9 +42,9 @@ const getQuestion = (req, res) => {
               });
             }
           }
-          res.send(errorMsg.info("", true, { question: qns, answers: ans }));
+          return res.send(errorMsg.info("", true, { question: qns, answers: ans }));
         }
-        res.send(errorMsg.info("No data found", true));
+        return res.send(errorMsg.info("No data found", true));
       })
       .catch(err => {
         res.send(errorMsg.error(err));
