@@ -1,7 +1,7 @@
-const serviceQns = require( "../services/question");
-const errorMsg = require( "../services/error");
-const authService = require( "../services/auth");
-const validator = require( "../services/validator");
+const serviceQns = require("../services/question");
+const errorMsg = require("../services/error");
+const authService = require("../services/auth");
+const validator = require("../services/validator");
 
 const getAllQuestions = (req, res) => {
   return serviceQns
@@ -38,7 +38,8 @@ const getQuestion = (req, res) => {
                 answeredby: value.answeredby,
                 createddate: value.ansdate,
                 id: value.ansid,
-                votes: value.vote
+                votes: value.vote,
+                comments: answerComments(value.comments)
               });
             }
           }
