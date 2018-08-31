@@ -2,10 +2,10 @@
   "name": "stackoverflowlite-andela",
   "version": "1.0.0",
   "description": "",
-  "main": "starter.js",
+  "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec --exit",
-    "start": "node starter.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
