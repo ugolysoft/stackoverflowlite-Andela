@@ -1,10 +1,10 @@
-const bcrypt = require("bcrypt");
-const authService = require("../services/auth");
-const userService = require("../services/user");
-var errorMsg = require("../services/error");
-const validator = require("../services/validator");
-function login(req, res) {
-  if (validator.notEmpty(req.body.email) && validator.notEmpty(req.body.password)) {
+import authService from "../services/auth";
+import userService from "../services/user";
+import errorMsg from "../services/error";
+import validator from "../services/validator";
+
+const login = (req, res) => {
+  if (validator.checkValidInputes(req.body)) {
     return authService
       .authenticate(req.body)
       .then(result => {
@@ -15,33 +15,26 @@ function login(req, res) {
         res.send(errorMsg.error(err));
       });
   }
-  return res.send(errorMsg.info("Wrong email or password"));
-}
+  return res.send(errorMsg.info(req.body.data.toString()));
+};
 
-function register(req, res) {
-  if (
-    validator.notEmpty(req.body.email) &&
-    validator.notEmpty(req.body.name) &&
-    validator.notEmpty(req.body.password)
-  ) {
-    var user = {
-      email: validator.htmlSpecialCharacter(req.body.email),
-      password: bcrypt.hashSync(req.body.password, 2),
-      name: validator.htmlSpecialCharacter(req.body.name)
-    };
+const register = (req, res) => {
+  if (validator.checkValidInputes(req.body, true)) {
     return userService
-      .addUser(user)
+      .addUser(req.body)
       .then(execute => {
         if (execute.length > 0)
-          return res.send(errorMsg.info("Resgistration was successful", true, execute));
-        return res.send(errorMsg.info(`Operation failed. Email '${user.email}' already exist.`));
+          return res.send(errorMsg.info("Resgistration was successful", true));
+        return res.send(
+          errorMsg.info(`Operation failed. Email '${req.body.email}' already exist.`)
+        );
       })
       .catch(err => {
-        return res.status(400).send(errorMsg.error(err));
+        return res.status(400).send(errorMsg.error(err, "this is error"));
       });
   }
-  return res.send(errorMsg.info("Operation failed. Please fill all the boxes"));
-}
+  return res.send(errorMsg.info(req.body.data.toString()));
+};
 
 module.exports = {
   login,

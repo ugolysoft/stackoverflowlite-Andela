@@ -16,8 +16,9 @@
                     </div>
                     <nav class="col-half align-right">
                         <ul>
-                            <li><a href="signin.html">Login</a></li>
-                            <li class="active"><a href="signup.html">Sign Up</a></li>
+                            <li class="for-authorizeduser hidden user-nav"><a onclick="_use.logout();">logout</a></li>
+                            <li class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
+                            <li class="active" class="for-anonymous hidden user-nav"><a href="signup.html">Sign Up</a></li>
                         </ul>
                     </nav><br>
                 </div><br class="clear">
@@ -27,9 +28,9 @@
                     <nav class="align-center">
                         <ul>
                             <li ><a href="index.html">Home</a></li>
-                            <li><a href="profile.html">User Page</a></li>
+                            <li class="for-authorizeduser hidden user-nav"><a href="profile.html">User Page</a></li>
                             <li><a href="questions.html">Questions</a></li>
-                            <li><a href="postquestion.html">Ask</a></li>
+                            <li class="for-authorizeduser hidden user-nav"><a href="postquestion.html">Ask</a></li>
                         </ul>
                    </nav>
                 </div>

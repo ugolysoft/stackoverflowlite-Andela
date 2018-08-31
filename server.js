@@ -1,6 +1,6 @@
-var express = require("express");
-var app = express();
-var router = require("./router");
+import express from "express";
+const app = express();
+import router from "./router";
 app.use(express.static("public"));
 app.use("/", router);
 

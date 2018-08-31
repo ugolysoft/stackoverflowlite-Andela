@@ -1,15 +1,14 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const client = require("../db");
-var errorMsg = require("../services/error");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import client from "../db";
+import errorMsg from "../services/error";
 
-const authenticate = params => {
+const authenticate = data => {
   const query = "SELECT * FROM users_tb WHERE email=$1";
-  const data = [params.email];
-  return client.runQuery(query, data).then(user => {
+  return client.runQuery(query, [data.email]).then(user => {
     if (Array.isArray(user) && user.length > 0) {
-      if (!bcrypt.compareSync(params.password || "", user[0].password))
-        return errorMsg.info("Wrong email or password");
+      if (!bcrypt.compareSync(data.password || "", user[0].password))
+        return errorMsg.info("Wrong password");
       const userData = {
         name: user[0].name,
         email: user[0].email,
@@ -18,12 +17,14 @@ const authenticate = params => {
       };
       return {
         success: true,
+        message: "You have successfully login",
         token: jwt.sign(userData, "make-me-screet", {
           expiresIn: "2h"
-        })
+        }),
+        data: "Token expired in 2 hours"
       };
     }
-    return { success: false, message: "Wrong email address" };
+    return errorMsg.info("Wrong email address");
   });
 };
 

@@ -1,5 +1,5 @@
-const client = require("../db");
-const validator = require("../services/validator");
+import client from "../db";
+import validator from "../services/validator";
 
 const postAnswer = params => {
   const query =
@@ -15,7 +15,8 @@ const postAnswer = params => {
 };
 const vote = params => {
   const query =
-    "INSERT INTO votes_tb(vote,ansvote,votedby) SELECT $1, $2, $3 WHERE NOT EXISTS(SELECT voteid FROM votes_tb WHERE ansvote=$4 AND votedby=$5 LIMIT 1) RETURNING * ";
+    "INSERT INTO votes_tb(vote,ansvote,votedby) SELECT $1, $2, $3 WHERE NOT " +
+    "EXISTS(SELECT voteid FROM votes_tb WHERE ansvote=$4 AND votedby=$5 LIMIT 1) RETURNING * ";
   const data = [
     params.body.vote,
     params.params.id,

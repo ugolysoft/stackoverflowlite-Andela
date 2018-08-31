@@ -1,54 +1,51 @@
-const client = require("../db");
-const validator = require("../services/validator");
+import client from "../db";
+import validator from "../services/validator";
 
-const postQuestion = params => {
-  const query = "INSERT INTO questions_tb(title,question,askedby) VALUES($1, $2, $3) RETURNING * ";
+const postQuestion = question => {
+  const query =
+    "INSERT INTO questions_tb(title,question,askedby) SELECT $1, $2, $3 WHERE NOT " +
+    "EXISTS(SELECT qnsid FROM questions_tb WHERE title=$4 AND askedby=$5 LIMIT 1) RETURNING *";
   const data = [
-    validator.htmlSpecialCharacter(params.body.title),
-    validator.htmlSpecialCharacter(params.body.body),
-    parseInt(params.user.id)
+    validator.htmlSpecialCharacter(question.body.title),
+    validator.htmlSpecialCharacter(question.body.body),
+    parseInt(question.user.id),
+    validator.htmlSpecialCharacter(question.body.title),
+    parseInt(question.user.id)
   ];
   return client.runQuery(query, data);
 };
-const getQuestion = params => {
-  const query =
-    "SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote " +
-    ", (SELECT ARRAY_AGG(CONCAT_WS('$*%',message,commentedby)) FROM comments_tb WHERE anscomment=b.ansid) AS comments " +
-    "FROM questions_tb a LEFT JOIN (answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid INNER JOIN users_tb c ON (c.id=a.askedby) WHERE a.qnsid=$1";
-  const data = [params];
-  return client.runQuery(query, data);
+const getQuestion = questionid => {
+  const query = `SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote , 
+    (SELECT ARRAY_AGG(CONCAT_WS('$*%',z.message,y.name,z.commentdate)) FROM comments_tb z INNER JOIN users_tb y ON y.id=z.commentedby  
+    WHERE z.anscomment=b.ansid) AS comments FROM questions_tb a LEFT JOIN (answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid 
+    INNER JOIN users_tb c ON (c.id=a.askedby) WHERE a.qnsid=$1`;
+  return client.runQuery(query, [questionid]);
 };
 
 const allQuestions = (option = "", data = []) => {
-  const query =
-    `SELECT a.title,a.qnsid,a.askedate,b.name, (SELECT COUNT(ansid) FROM answers_tb WHERE questionid=a.qnsid) AS ans ` +
-    `FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby) ${option}  ORDER BY ans DESC`;
+  const query = `SELECT a.title,a.qnsid,a.askedate,b.name, (SELECT COUNT(ansid) FROM answers_tb WHERE questionid=a.qnsid) AS ans 
+  FROM questions_tb a INNER JOIN users_tb b ON (b.id=a.askedby) ${option}  ORDER BY ans DESC`;
   return client.runQuery(query, data);
 };
 
-const myQuestions = params => {
+const myQuestions = userid => {
   return client.runQuery("SELECT title,askedate,qnsid FROM questions_tb WHERE askedby=$1", [
-    params
+    userid
   ]);
 };
 
-const search = params => {
-  return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1) ", [params]);
+const search = searchtext => {
+  return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1) ", [searchtext]);
 };
 
-const get_Question = params => {
-  const query = "SELECT a.* FROM questions_tb a  WHERE a.qnsid=$1";
-  const data = [params];
-  return client.runQuery(query, data);
-};
-const updateQuestion = params => {
+const updateQuestion = question => {
   const query =
     "UPDATE questions_tb SET question=$1,title=$2 WHERE qnsid=$3 AND askedby=$4 RETURNING * ";
   const data = [
-    validator.htmlSpecialCharacter(params.body),
-    validator.htmlSpecialCharacter(params.title),
-    params.id,
-    params.userid
+    validator.htmlSpecialCharacter(question.body),
+    validator.htmlSpecialCharacter(question.title),
+    question.id,
+    question.userid
   ];
   return client.runQuery(query, data);
 };
@@ -65,7 +62,6 @@ module.exports = {
   getQuestion,
   updateQuestion,
   deleteQuestion,
-  get_Question,
   search,
   myQuestions
 };

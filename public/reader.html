@@ -29,37 +29,26 @@
                         <ul>
                             <li><a href="index.html">Home</a></li>
                             <li class="for-authorizeduser hidden user-nav"><a href="profile.html">User Page</a></li>
-                            <li class="active"><a href="questions.html">Questions</a></li>
+                            <li><a href="questions.html">Questions</a></li>
                             <li class="for-authorizeduser hidden user-nav"><a href="postquestion.html">Ask</a></li>
                         </ul>
                    </nav>
                 </div>
         </header>
         <section id="body">
-            
+      
             <div class="container">
             <br><br>
-            <div class="caption relative"><h3>All Questions</h3>
-                <div class="searchcontainer">
-                        <div class="relative">
-                            <input type="text" oninput="this.className ='input-box'" placeholder="search question" class="input-box" id="searchtext"/>
-                            <span class="searchbtn"  onclick="_use.search();">
-                                <span class="searchiconhead"></span>
-                                <span class="seachicontail"></span>
-                            </span>
-                        </div>
-                    </div>
-            </div>
-            <br>
-            <table class="table-bottom-line" id="questionstb"></table>
-            <br>
-            <br><br>
+            <div id="questionviewer"></div>
+             
             
         </div>
         </section>
         <footer>
             Copyright © 2018. All Right Reserved
         </footer>
+        
+        
     </body>
     <script src="js/user.js"></script>
 </html>
