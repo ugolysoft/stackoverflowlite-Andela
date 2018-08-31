@@ -56,9 +56,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
             expect(res.body.message).to.include("Operation failed");
           else expect(res.body.message).to.include("Wrong email or password");
         } else {
-          token = res.body.token;
-
-          expect(res.body).to.have.property("token");
+          token = res.body.data.token;
           jwt.verify(res.body.token, "make-me-screet", (err, decoded) => {
             if (!err) {
               expect(decoded.email).to.equal(user.email);
