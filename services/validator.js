@@ -24,11 +24,11 @@ const validDatatype = (value, datatype = "integer") => {
   return false;
 };
 
-const checkValidInputes = (_object, validateEmail = false, expectedInteger = false) => {
+const checkValidInputes = (_object, _keys, validateEmail = false) => {
   let valid = true,
     data = [];
   for (var key in _object) {
-    if (_object.hasOwnProperty(key)) {
+    if (_object.hasOwnProperty(key) && _keys.indexOf(key) > -1) {
       if (!notEmpty(_object[key])) {
         data.push(`${key} must not be empty`);
         valid = false;

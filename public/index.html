@@ -13,27 +13,30 @@
             <div class="container">
                 <div class="row-container">
                     <div class="col-half">
-                        <h1>StackOverflow-Lite</h1>
+                        <h1><a href="index.html">StackOverflow-Lite</a></h1>
                     </div>
                     <nav class="col-half align-right">
                         <ul>
-                            <li class="for-authorizeduser hidden user-nav"><a onclick="_use.logout();">logout</a></li>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li class="for-authorizeduser hidden user-nav">
+                                <div class="dropdown">
+                                    <a class="relative"><span id="user-dropdown">User</span> <span class="down-angle"></span></a>
+                                    <ul class="dropdown-content">
+                                        <li><a href="profile.html">Profile</a></li>
+                                        <li><a href="postquestion.html">Ask</a></li>
+                                        <hr>
+                                        <li><a onclick="_use.logout();">logout</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                             <li class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
-                            <li class="for-anonymous hidden user-nav"><a href="signup.html">Sign Up</a></li>
                         </ul>
                     </nav><br>
                 </div><br class="clear">
                 
             </div>
             <div id="nav-container">
-                    <nav class="align-center">
-                        <ul>
-                            <li class="active"><a href="index.html">Home</a></li>
-                            <li class="for-authorizeduser hidden user-nav"><a href="profile.html">User Page</a></li>
-                            <li><a href="questions.html">Questions</a></li>
-                            <li class="for-authorizeduser hidden user-nav"><a href="postquestion.html">Ask</a></li>
-                        </ul>
-                   </nav>
+                    <nav class="align-center"></nav>
                 </div>
         </header>
         <section id="bgphoto">
@@ -72,14 +75,14 @@
                 <br class="clear"><br><br>
             <div class="caption relative"><h3>Recent Questions</h3>
                 <div class="searchcontainer">
-                        <div class="relative">
-                            <input type="text" placeholder="search question" class="input-box" id="searchtext"/>
-                            <span class="searchbtn" onclick="search()">
-                                <span class="searchiconhead"></span>
-                                <span class="seachicontail"></span>
-                            </span>
-                        </div>
+                    <div class="relative">
+                        <input type="text" oninput="this.className ='input-box'" placeholder="search question" class="input-box" id="searchtext"/>
+                        <span class="searchbtn"  onclick="_use.search();">
+                            <span class="searchiconhead"></span>
+                            <span class="seachicontail"></span>
+                        </span>
                     </div>
+                </div>
             </div>
             <br>
             <table class="table-bottom-line" id="questionstb"></table>

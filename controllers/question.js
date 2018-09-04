@@ -1,5 +1,5 @@
 const serviceQns = require("../services/question");
-const errorMsg = require("../services/error");
+const message = require("../services/message");
 const authService = require("../services/auth");
 const validator = require("../services/validator");
 
@@ -7,10 +7,10 @@ const getAllQuestions = (req, res) => {
   return serviceQns
     .allQuestions()
     .then(results => {
-      res.send(errorMsg.info("", true, results));
+      res.send(message.info("", true, results));
     })
     .catch(err => {
-      res.send(errorMsg.error(err));
+      res.send(message.error(err));
     });
 };
 
@@ -19,19 +19,9 @@ const getQuestion = (req, res) => {
     return serviceQns
       .getQuestion(req.params.id)
       .then(results => {
-        //res.send(results);
-
         if (results.length > 0) {
-          let ans = [],
-            qns = {};
+          let ans = [];
           for (var value of results) {
-            qns = {
-              title: value.title,
-              question: value.question,
-              askeddby: value.name,
-              createddate: value.askedate,
-              id: value.qnsid
-            };
             if (value.answer != null && value.answer != "") {
               ans.push({
                 answer: value.answer,
@@ -39,34 +29,27 @@ const getQuestion = (req, res) => {
                 createddate: value.ansdate,
                 id: value.ansid,
                 votes: value.vote,
-                comments: answerComments(value.comments)
+                userid : value.answeredby
               });
             }
           }
-          return res.send(errorMsg.info("", true, { question: qns, answers: ans }));
+          let qns = {
+            title: results[0].title,
+            question: results[0].question,
+            askeddby: results[0].name,
+            createddate: results[0].askedate,
+            id: results[0].qnsid,
+            answers: ans
+          };
+          return res.send(message.info("questions fetched", true, qns));
         }
-        return res.send(errorMsg.info("No data found", true));
+        return res.send(message.info("No data found", true));
       })
       .catch(err => {
-        res.send(errorMsg.error(err));
+        res.send(message.error(err));
       });
   }
-  return res.send(errorMsg.info("Operation failed. Wrong data type; integer required"));
-};
-
-const answerComments = value => {
-  let comment = [];
-  if (Array.isArray(value)) {
-    for (var val of value) {
-      let c = val.split("$*%");
-      comment.push({
-        name: c[1],
-        message: c[0],
-        date: c[2]
-      });
-    }
-  }
-  return comment;
+  return res.send(message.info("Operation failed. Wrong data type; integer required"));
 };
 
 const myQuestions = (req, res) => {
@@ -77,28 +60,28 @@ const myQuestions = (req, res) => {
         res.send(execute);
       })
       .catch(err => {
-        res.send(errorMsg.error(err));
+        res.send(message.error(err));
       });
   }
-  return res.send(errorMsg.info("Operation failed. Access denied"));
+  return res.send(message.info("Operation failed. Access denied"));
 };
 
 const postQuestion = (req, res) => {
   if (authService.checkAuth(req)) {
-    if (validator.checkValidInputes(req.body)) {
+    if (validator.checkValidInputes(req.body,["body", "title"])) {
       return serviceQns
         .postQuestion(req)
         .then(question => {
-          if (question.length > 0) return res.send(errorMsg.info("Question saved", true, question));
-          return res.send(errorMsg.info("You have asked a question with this title"));
+          if (question.length > 0) return res.send(message.info("Question saved", true, question[0]));
+          return res.send(message.info("You have asked a question with this title"));
         })
         .catch(err => {
-          res.send(errorMsg.error(err));
+          res.send(message.error(err));
         });
     }
-    return res.send(errorMsg.info(req.body.data));
+    return res.send(message.info(req.body.data));
   }
-  return res.send(errorMsg.info("Operation failed. Access denied"));
+  return res.send(message.info("Operation failed. Access denied"));
 };
 
 const search = (req, res) => {
@@ -109,38 +92,12 @@ const search = (req, res) => {
         res.send(results);
       })
       .catch(err => {
-        res.send(errorMsg.error(err));
+        res.send(message.error(err));
       });
   }
-  return res.send(errorMsg.info("Operation failed. Search field is empty"));
+  return res.send(message.info("Operation failed. Search field is empty"));
 };
 
-const updateQuestion = (req, res) => {
-  if (authService.checkAuth(req)) {
-    let data = {
-      id: req.params.id,
-      body: req.body.body,
-      title: req.body.title,
-      userid: req.user.id
-    };
-    if (validator.checkValidInputes(data)) {
-      return serviceQns
-        .updateQuestion(data)
-        .then(execute => {
-          if (execute.length > 0) {
-            return res.send(errorMsg.info("update successful", true, execute));
-          } else {
-            return res.send(errorMsg.info("Operation failed. You cannot update this question"));
-          }
-        })
-        .catch(err => {
-          res.send(errorMsg.error(err));
-        });
-    }
-    return res.send(errorMsg.info(data.data));
-  }
-  return res.send(errorMsg.info("Operation failed. Access denied"));
-};
 
 const deleteQuestion = (req, res) => {
   if (authService.checkAuth(req)) {
@@ -148,27 +105,23 @@ const deleteQuestion = (req, res) => {
       return serviceQns
         .deleteQuestion(req.params.id, req.user.id)
         .then(execute => {
-          if (execute.length > 0)
-            res.send(errorMsg.info("Operation was successful", true, execute));
+          if (execute.length > 0) res.send(message.info("Operation was successful", true, execute));
           else
-            res.send(
-              errorMsg.info("Operation failed. You cannot delete question you did not post")
-            );
+            res.send(message.info("Operation failed. You cannot delete question you did not post"));
         })
         .catch(err => {
-          res.send(errorMsg.error(err));
+          res.send(message.error(err));
         });
     }
-    return res.send(errorMsg.info("Operation failed. Wrong datatype integer required"));
+    return res.send(message.info("Operation failed. Wrong datatype integer required"));
   }
-  return res.send(errorMsg.info("Operation failed. Access denied"));
+  return res.send(message.info("Operation failed. Access denied"));
 };
 
 module.exports = {
   getAllQuestions,
   getQuestion,
   postQuestion,
-  updateQuestion,
   deleteQuestion,
   search,
   myQuestions
