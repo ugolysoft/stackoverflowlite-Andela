@@ -1,8 +1,7 @@
-var app = require('./config');
+const express = require("express");
+const app = express();
+const router = require("./router");
+app.use(express.static("public"));
+app.use("/", router);
 
-var port = process.env.PORT || 3000;
-
-app.listen(port, function(){
-	console.log(`server up: http://localhost:${port}`);
-});
-
+module.exports = app;

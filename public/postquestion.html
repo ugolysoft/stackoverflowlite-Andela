@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Post Question</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
+		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div class="row-container">
+                    <div class="col-half">
+                        <h1><a href="index.html">StackOverflow-Lite</a></h1>
+                    </div>
+                    <nav class="col-half align-right">
+                        <ul>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li class="for-authorizeduser hidden user-nav">
+                                <div class="dropdown">
+                                    <span class="relative active"><a id="user-dropdown">User</a> <span class="down-angle"></span></span>
+                                    <ul class="dropdown-content">
+                                        <li><a href="profile.html">Profile</a></li>
+                                        <li class="active"><a href="postquestion.html">Ask</a></li>
+                                        <hr>
+                                        <li><a onclick="_use.logout();">logout</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
+                        </ul>
+                    </nav><br>
+                </div><br class="clear">
+                
+            </div>
+            <div id="nav-container">
+                    <nav class="align-center"></nav>
+                </div>
+        </header>
+        <section id="body">
+           
+            <div class="container">
+            <br><br>
+            <div>
+                <b>Title</b>
+                <input type="text" name="title" id="title" placeholder="What is title of Your question? Be specific" oninput="this.className ='input-box'" class="input-box"/><br>
+                <b>Body</b>
+                <textarea name="question" id="question" placeholder="Type in your question" oninput="this.className ='input-box'" class="input-box" rows="15"></textarea>
+                <br /><br />
+                <input type="button" id="savequestion" onclick="_use.saveQuestion(this)" class="btn" value="Post Your Question"/>
+            </div>
+            <br><br>
+        </div>
+        </section>
+        <footer>
+            Copyright © 2018. All Right Reserved
+        </footer>
+    </body>
+    <script src="js/user.js"></script>
+</html>

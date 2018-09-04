@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Profile</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
+		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
+    </head>
+    <body >
+       <header>
+            <div class="container">
+                <div class="row-container">
+                    <div class="col-half">
+                        <h1><a href="index.html">StackOverflow-Lite</a></h1>
+                    </div>
+                    <nav class="col-half align-right">
+                        <ul>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li class="for-authorizeduser hidden user-nav">
+                                <div class="dropdown">
+                                    <span class="relative active"><a id="user-dropdown">User</a> <span class="down-angle"></span></span>
+                                    <ul class="dropdown-content">
+                                        <li class="active"><a href="profile.html">Profile</a></li>
+                                        <li><a href="postquestion.html">Ask</a></li>
+                                        <hr>
+                                        <li><a onclick="_use.logout();">logout</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
+                        </ul>
+                    </nav><br>
+                </div><br class="clear">
+                
+            </div>
+            <div id="nav-container">
+                    <nav class="align-center"></nav>
+                </div>
+        </header>
+        <section id="body">
+            
+            <div class="container">
+            
+            
+            <br><br>
+            <div class="profilepicture">
+                <img src="../images/user.jpg" alt=""/>
+            </div>
+            <h3 class="align-center" id="nameofuser"></h3>
+            <p class="align-center" id="useremail"></p>
+            <br>
+            <div class="align-center">
+                <div class="inline-block">
+                    <span class="lg-font block" id="noofaskedquestions"></span>
+                    <span>Asked Questions</span>
+                </div>
+                <div class="inline-block">
+                    <span class="lg-font block" id="noofansweredquestions"></span>
+                    <span>Answered Questions</span>
+                </div>
+                
+            </div><br><br>
+            
+            <div class="row-container">
+                
+                <div >
+                    <span class="caption">Asked Questions</span>
+                    <table class="table-bottom-line" id="userquestionstb">
+                       
+                    </table>
+                    <br>
+                    
+                </div>
+               
+            </div>
+            <br class="clear"><br><br>
+        </div>
+        </section>
+        <footer>
+            Copyright © 2018. All Right Reserved
+        </footer>
+       
+    </body>
+    <script src="js/user.js"></script>
+
+    <script>
+        setTimeout(()=>{
+            const qns = new getData("/api/v1/users/questions/", _use.userProfile);
+      qns.request();
+        },500);
+    </script>
+</html>
