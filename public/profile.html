@@ -8,31 +8,34 @@
 		<link href='https://fonts.googleapis.com/css?family=Taprom' rel='stylesheet'>
     </head>
     <body >
-        <header>
+       <header>
             <div class="container">
                 <div class="row-container">
                     <div class="col-half">
-                        <h1>StackOverflow-Lite</h1>
+                        <h1><a href="index.html">StackOverflow-Lite</a></h1>
                     </div>
                     <nav class="col-half align-right">
                         <ul>
-                            <li class="for-authorizeduser hidden user-nav"><a onclick="_use.logout();">logout</a></li>
+                            <li><a href="questions.html">Questions</a></li>
+                            <li class="for-authorizeduser hidden user-nav">
+                                <div class="dropdown">
+                                    <span class="relative active"><a id="user-dropdown">User</a> <span class="down-angle"></span></span>
+                                    <ul class="dropdown-content">
+                                        <li class="active"><a href="profile.html">Profile</a></li>
+                                        <li><a href="postquestion.html">Ask</a></li>
+                                        <hr>
+                                        <li><a onclick="_use.logout();">logout</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                             <li class="for-anonymous hidden user-nav"><a href="signin.html">Login</a></li>
-                            <li class="for-anonymous hidden user-nav"><a href="signup.html">Sign Up</a></li>
                         </ul>
                     </nav><br>
                 </div><br class="clear">
                 
             </div>
             <div id="nav-container">
-                    <nav class="align-center">
-                        <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li class="active" class="for-authorizeduser hidden user-nav"><a href="profile.html">User Page</a></li>
-                            <li><a href="questions.html">Questions</a></li>
-                            <li class="for-authorizeduser hidden user-nav"><a href="postquestion.html">Ask</a></li>
-                        </ul>
-                   </nav>
+                    <nav class="align-center"></nav>
                 </div>
         </header>
         <section id="body">
@@ -44,16 +47,16 @@
             <div class="profilepicture">
                 <img src="../images/user.jpg" alt=""/>
             </div>
-            <h3 class="align-center">Onuorah Ugochukwu</h3>
-            <p class="align-center">usermail@gmail.com</p>
+            <h3 class="align-center" id="nameofuser"></h3>
+            <p class="align-center" id="useremail"></p>
             <br>
             <div class="align-center">
                 <div class="inline-block">
-                    <span class="lg-font block">7</span>
+                    <span class="lg-font block" id="noofaskedquestions"></span>
                     <span>Asked Questions</span>
                 </div>
                 <div class="inline-block">
-                    <span class="lg-font block">12</span>
+                    <span class="lg-font block" id="noofansweredquestions"></span>
                     <span>Answered Questions</span>
                 </div>
                 
@@ -61,39 +64,15 @@
             
             <div class="row-container">
                 
-                <div class="col-half">
-                    <span class="caption">Recent Asked Questions</span>
-                    <table class="table-bottom-line" id="recentquestionstb">
-                        <tr><td><a href="viewquestion.html" class="undecorated"><b>The first recent asked question</b></a>
-                                <p class="unpad align-right">15 seconds ago</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                        <tr><td><a class="undecorated" href="viewquestion.html"><b>The second recent asked question with more test to make it longer than others</b></a>
-                                <p class="unpad align-right">30 minutes ago</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                        <tr><td><a class="undecorated" href="viewquestion.html"><b>The third recent asked question</b></a>
-                                <p class="unpad align-right">24 hours ago</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                        <tr><td><a class="undecorated" href="viewquestion.html"><b>The fourth recent asked question</b></a>
-                                <p class="unpad align-right">2 days ago</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
+                <div >
+                    <span class="caption">Asked Questions</span>
+                    <table class="table-bottom-line" id="userquestionstb">
+                       
                     </table>
                     <br>
                     
                 </div>
-                <div class="col-half">
-                    <span class="caption">Most Answered Questions</span>
-                    <table class="table-bottom-line">
-                        <tr><td>12 ans</td><td><a class="undecorated" href="answer.html"><b>The first most answered question</b></a>
-                                <p class="unpad align-right">8 August, 2018 @ 12:00</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                        <tr><td>6 ans</td><td><a class="undecorated" href="answer.html"><b>The second most answered question</b></a>
-                                <p class="unpad align-right">7 August, 2018 @ 15:45</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                        <tr><td>3 ans</td><td><a class="undecorated" href="answer.html"><b>The third most answered question</b></a>
-                                <p class="unpad align-right">9 August, 2018 @ 16:30</p></td><td class="align-center"><span class="delete"></span>
-                            </td></tr>
-                    </table><br>
-                </div>
+               
             </div>
             <br class="clear"><br><br>
         </div>
@@ -104,4 +83,11 @@
        
     </body>
     <script src="js/user.js"></script>
+
+    <script>
+        setTimeout(()=>{
+            const qns = new getData("/api/v1/users/questions/", _use.userProfile);
+      qns.request();
+        },500);
+    </script>
 </html>

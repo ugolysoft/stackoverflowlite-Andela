@@ -79,7 +79,7 @@ header ul{
     margin: 0; padding: 0; list-style: none;
 }
 header li{
-    list-style: none; display: inline;
+    list-style: none; display: inline; 
 }
 header a{
     padding: 12px 15px; display: inline-block; text-decoration: none; border-radius: 4px;
@@ -91,11 +91,12 @@ header .align-right a{
 header .align-right a:hover{
     background-color: #2a2a2a; color: #fff; 
 }
-header .align-right .active a{
-    background-color: #2a2a2a; color: #fff; font-weight: bold;
-}
+
 header h1{
     margin-top: 0; 
+}
+header h1 a{
+    color: #2a2a2a;
 }
 #nav-container{
     background-color: #2a2a2a; color: #fff; padding-bottom: 20px; padding-top: 20px;
@@ -107,8 +108,32 @@ header h1{
 header #nav-container a:hover{
     background-color: #fff; color: #3a3a3a; 
 }
-header #nav-container .active a{
-    background-color: #fff; color: #3a3a3a; font-weight: bold;
+
+
+
+
+.dropdown{
+    position: relative; display: inline-block;
+}
+
+.dropdown-content{
+    display: none; position: absolute; background-color: #f1f1f1;
+    min-width: 180px; box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); z-index: 1;
+    padding: 7px 10px;
+}
+.dropdown-content a:hover{
+    background-color: #ddd;
+}
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+.dropdown-content li, .dropdown-content li a{
+    display: block; text-align: left; width: 100% !important;
+}
+
+header .active a{
+    background-color: #2a2a2a; color: #fff; font-weight: bold;
 }
 
 
@@ -118,6 +143,27 @@ header #nav-container .active a{
     background-size: cover;
     
 }
+
+
+.edit{
+    width: 5px; height: 30px; transform: rotate(45deg); display: inline-block;
+    position: relative; margin-left: 10px; cursor: pointer;
+}
+
+.edit-pen{
+    position: absolute; bottom: -4.5px; 
+    width: 0; height: 0; border-left: 4px solid transparent;
+    border-right: 4px solid transparent; border-top: 4px solid #2a2a2a;
+}
+.edit-mid{
+    position: absolute; bottom: 0; height: 12px; background-color: #2a2a2a; width: 5px;
+    left: 1.5px;
+}
+.edit-end{
+    position: absolute; bottom: 13px; height: 4px; background-color: #2a2a2a; width: 5px;
+    left: 1.5px;
+}
+
 
 
 /*Entry form*/
@@ -205,7 +251,12 @@ footer{
     border-right: 12px solid transparent; border-top: 12px solid #7e7e7e;
     cursor: pointer; 
 }
-
+.down-angle{
+    width: 0; height: 0; border-left: 5px solid transparent;
+    border-right: 5px solid transparent; border-top: 6px solid #7e7e7e;
+    cursor: pointer; margin-left: 10px; position: absolute; right: 0;
+    top: 50%; transform: translateY(-50%);
+}
 
 /*Table*/
 table {

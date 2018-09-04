@@ -10,14 +10,14 @@
     const user = _use.getCookie("statckusers");
     const nav = document.getElementsByClassName("user-nav");
     if (user != "") {
-      for (var val of nav) {
-        if (val.classList.contains("for-authorizeduser"))
-          val.className = "for-authorizeduser user-nav";
+      _use.removeClass("for-authorizeduser", nav);
+      if (document.getElementById("welcomenote")) {
+        document.getElementById("welcomenote").style.width = "100%";
+        document.getElementById("entry").style.display = "none";
       }
+      document.getElementById("user-dropdown").innerHTML = JSON.parse(user).name.split(" ")[0];
     } else {
-      for (var val of nav) {
-        if (val.classList.contains("for-anonymous")) val.className = "for-anonymous user-nav";
-      }
+      _use.removeClass("for-anonymous", nav);
     }
     if (document.getElementById("questionviewer")) {
       const questionid = _use.getUrlVars();
@@ -27,7 +27,7 @@
         qns.request();
       }
     }
-  }, 200);
+  }, 500);
 
   if (document.getElementsByClassName("delete")) {
     var elem = document.getElementsByClassName("delete");
@@ -37,9 +37,7 @@
         var q = row.getElementsByTagName("a")[0].childNodes[0].innerHTML;
         var con = confirm('Are you sure you want to delete this quwstion: "' + q + '"?');
         if (con) {
-          var parent = this.parentNode.parentNode.parentNode;
-          var rowindex = row.rowIndex;
-          parent.deleteRow(rowindex);
+          
         }
       });
     }
@@ -47,6 +45,34 @@
 })();
 
 class _use {
+
+  static deletQuestion(id,$this){
+    const q = $this.parentNode.parentNode.getElementsByTagName("a")[0].childNodes[0].innerHTML;
+        if (confirm('Are you sure you want to delete this quwstion: "' + q + '"?')) {
+          const data = {
+            id: id
+          };
+          const req = new getData(
+            "/api/v1/questions/" + parseInt(id),
+            _use.reloadPage,
+            "DELETE",
+            data
+          );
+          req.request();
+        }
+  }
+  static removeClass(_className, nav) {
+    for (var val of nav) {
+      if (val.classList.contains(_className)) {
+        val.classList.remove("hidden");
+      }
+    }
+  }
+
+  static decoder(user) {
+    document.getElementById("user-dropdown").innerHTML = user.name.split(" ")[0];
+  }
+
   static getUrlVars() {
     var vars = {};
     window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
@@ -55,67 +81,110 @@ class _use {
     return parseInt(vars["questionid"]);
   }
   static viewquestion(m) {
-    let q = `<h3>${m.question.title}</h3><div class="">${m.question.question}
-          <p class="unpad align-right"><b>${m.question.askeddby}</b> <span class="inline-table">
-          ${m.question.createddate}</span></p></div><br><span class="caption">2 Answers</span>
+    const userid = JSON.parse(_use.getCookie("statckusers")).id;
+    let q = `<h3>${m.title}</h3><div class="">${m.question}
+          <p class="unpad align-right"><b>${m.askeddby}</b> <span class="inline-table">
+          ${m.createddate}</span></p></div><br><span class="caption">${
+      m.answers.length
+    } Answers</span>
           <table class="table-bottom-line table-topalign">`;
     for (let ans of m.answers) {
-      let _vote =
-        !isNaN(ans.votes) &&
-        parseInt(Number(ans.votes)) == ans.votes &&
-        !isNaN(parseInt(ans.votes, 10))
-          ? ans.votes
-          : 0;
-      q += `<tr><td><div class="align-center">
-      <span onclick="_use.vote(1,'${ans.id}');" class="upvote block">
-                    </span><p class="vote-score">${parseInt(
-                      _vote
-                    )}</p><span onclick="_use.vote(-1,'${ans.id}')" class="downvote block">
-                    </span></div></td><td>${ans.answer}<p class="unpad align-right"><b>${
-        ans.answeredby
-      }</b>
-                     <span class="inline-table">${
-                       ans.createddate
-                     }</span></p><br><span class="caption">Comments</span>
-                     <div class="comments-container">${_use.userComments(ans.comments)}
-                      <div class="comments-container"><div><span class="link-btn" onclick="_use.addcomment(this,${
-                        ans.id
-                      })">
-                      Add comment</span></div></div></div></td></tr>`;
+      q += `<tr><td><div class="align-center"><span onclick="_use.vote(1,'${
+        ans.id
+      }');" class="upvote block">
+            </span><p class="vote-score">${ans.votes || 0}</p>
+            <span onclick="_use.vote(-1,'${ans.id}')" class="downvote block">
+            </span></div></td><td><div><div class='inline-block'>${ans.answer}</div>`;
+      if (userid == ans.userid) q += _use.edit(ans.id);
+      q += `</div><p class="unpad align-right"><b>${ans.answeredby}</b>
+            <span class="inline-table">${
+              ans.createddate
+            }</span></p><br><span class="caption">Comments</span>
+            <div class="comments-container"><div id="${
+              ans.id
+            }comments"></div><div class="comments-container">
+            <div><span class="link-btn" onclick="_use.addcomment(this,${ans.id})">
+            Add comment</span></div></div></div></td></tr>`;
     }
     q += `</table><br /> <b>Body</b><textarea name="answer" id="answer" placeholder="Type in your answer"  class="input-box" rows="15">
     </textarea><br /><br /><input type="button" id="signupbtn" class="btn" onclick="_use.postAnswer('${
-      m.question.id
+      m.id
     }',this)" value="Post Your Answer"/><br><br>`;
 
     document.getElementById("questionviewer").innerHTML = q;
+    if (m.answers.length > 0) {
+      const qns = new getData(`/api/v1/questions/${m.id}/answers/comments`, _use.userComments);
+      qns.request();
+    }
+  }
+
+  static edit(id) {
+    return `<span class='edit' onclick='_use.toedit(this,${id})'>
+    <span class='edit-pen'></span><span class='edit-mid'></span><span class='edit-end'></span></span>`;
+  }
+
+  static toedit($this, id) {
+    $this.parentNode.innerHTML = `<textarea class='input-box'>
+    ${$this.parentNode.childNodes[0].innerHTML}</textarea><p>
+    <input type='button' value='Update' class='btn' onclick='_use.updateAnswer(${id},this)' ></p>`;
+  }
+  static userProfile(data) {
+    const user = JSON.parse(_use.getCookie("statckusers"));
+    if (user != "") {
+      document.getElementById("nameofuser").innerHTML = user.name;
+      document.getElementById("useremail").innerHTML = user.email;
+      const answer = data.filter(x => x.title =="");
+      const questions = data.filter(x => x.title !="");
+      document.getElementById('noofaskedquestions').innerHTML=questions[0].totalquestions;
+      document.getElementById('noofansweredquestions').innerHTML= answer[0].totalquestions;
+      let q = ``;
+      for(var question of questions){
+        q += ` <tr><td><a href="viewquestion.html" class="undecorated"><b>${question.title}</b></a>
+        <p class="unpad align-right">${question.askedate}</p></td><td class="align-center">
+        <span onclick='_use.deletQuestion(${question.qnsid},this)' class="delete"></span></td></tr>`;
+      }
+      document.getElementById('userquestionstb').innerHTML = q;
+    }
+  }
+  static updateAnswer(id, $this) {
+    const data = {
+      body: $this.parentNode.parentNode.childNodes[0].value
+    };
+    const req = new getData(
+      "/api/v1/questions/answers/" + parseInt(id),
+      _use.reloadPage,
+      "PUT",
+      data
+    );
+    req.request();
   }
 
   static vote(num, id) {
     const data = {
       vote: num
     };
-    const headers = {
-      "Content-Type": "application/json",
-      token: _use.getCookie("statckusers")
-    };
     const req = new getData(
       "/api/v1/questions/answers/votes/" + parseInt(id),
       _use.reloadPage,
       "POST",
-      data,
-      headers
+      data
     );
     req.request();
   }
   static userComments(comments) {
-    let c = "";
+    let c = "",
+      answerid = "";
     for (var com of comments) {
+      if (c !== "" && answerid !== com.anscomment) {
+        document.getElementById(answerid + "comments").innerHTML = c;
+        c = "";
+      }
       c += `<div class="comment">${com.message}<p class="unpad align-right">
-      <b>${com.name}</b> <span class="inline-table">${com.date}</span></p>
+      <b>${com.name}</b> <span class="inline-table">${com.commentdate}</span></p>
       </div>`;
+      answerid = com.anscomment;
     }
-    return c;
+    document.getElementById(answerid + "comments").innerHTML = c;
   }
   static addcomment(element, id) {
     let i = `<textarea class='input-box'  placeholder='Type in your comment'></textarea><br>`;
@@ -131,16 +200,11 @@ class _use {
       const data = {
         body: _format.htmlSpecialCharacter(msg)
       };
-      const headers = {
-        "Content-Type": "application/json",
-        token: _use.getCookie("statckusers")
-      };
       const req = new getData(
         "/api/v1/questions/answers/comments/" + parseInt(id),
         _use.reloadPage,
         "POST",
-        data,
-        headers
+        data
       );
       req.request();
     }
@@ -152,21 +216,17 @@ class _use {
       const data = {
         body: _format.htmlSpecialCharacter(msg)
       };
-      const headers = {
-        "Content-Type": "application/json",
-        token: _use.getCookie("statckusers")
-      };
       const req = new getData(
         "/api/v1/questions/" + questionid + "/answers",
         _use.reloadPage,
         "POST",
-        data,
-        headers
+        data
       );
       req.request();
     }
   }
-  static reloadPage() {
+
+  static reloadPage(data) {
     window.location.reload();
   }
   static signup() {
@@ -199,17 +259,13 @@ class _use {
         title: _format.htmlSpecialCharacter(document.getElementById("title").value),
         body: _format.htmlSpecialCharacter(document.getElementById("question").value)
       };
-      const headers = {
-        "Content-Type": "application/json",
-        token: _use.getCookie("statckusers")
-      };
-      const req = new getData("/api/v1/questions/", null, "POST", data, headers);
+      const req = new getData("/api/v1/questions/", _use.reloadPage, "POST", data);
       req.request();
     }
   }
 
   static onlogin(data) {
-    _use.setCookie(data.token);
+    _use.setCookie(JSON.stringify(data));
   }
 
   static questions(data) {
@@ -224,12 +280,14 @@ class _use {
     });
     qnstb.innerHTML = rows;
   }
-
-  static setCookie(cvalue) {
-    alert(cvalue);
+  static logout() {
+    _use.setCookie("", "Thu, 01 Jan 1970 00:00:00 GMT");
+    window.location.href = "index.html";
+  }
+  static setCookie(cvalue, destroy = undefined) {
     const d = new Date();
     d.setTime(d.getTime() + 2 * 60 * 60 * 1000);
-    var expires = "expires=" + d.toUTCString();
+    const expires = "expires=" + (destroy || d.toUTCString());
     document.cookie = "statckusers=" + cvalue + ";" + expires + ";path=/";
     window.location.href = "index.html";
   }
@@ -261,30 +319,30 @@ class _use {
 }
 
 class getData {
-  constructor(
-    url,
-    _fn,
-    method = "GET",
-    body = "",
-    headers = {
-      "Content-Type": "application/json"
-    }
-  ) {
+  constructor(url, _fn, method = "GET", body = "") {
     this.url = url;
     this.fn = _fn;
     this.method = method;
     this.body = body;
-    this.headers = headers;
   }
 
   request() {
+    const user = _use.getCookie("statckusers");
     const _fetch =
       this.method == "GET"
-        ? fetch(this.url)
+        ? fetch(this.url,{
+          method: "GET",
+          headers: {
+            token: user == "" ? user : JSON.parse(user).token
+          }
+        })
         : fetch(this.url, {
             method: this.method,
             body: JSON.stringify(this.body),
-            headers: this.headers
+            headers: {
+              "Content-Type": "application/json",
+              token: user == "" ? user : JSON.parse(user).token
+            }
           });
 
     _fetch
@@ -336,6 +394,7 @@ class _format {
       if (Array.isArray(data)) next(data);
       else if (data.data == "") {
         alert(`Success\n${data.success}\n\nMessage\n${data.message}`);
+        if (data.message.toLowerCase().indexOf("access denied") > -1) _use.logout();
       } else next(data.data);
     }
   }

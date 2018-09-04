@@ -15,9 +15,8 @@ const postQuestion = question => {
   return client.runQuery(query, data);
 };
 const getQuestion = questionid => {
-  const query = `SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote , 
-    (SELECT ARRAY_AGG(CONCAT_WS('$*%',z.message,y.name,z.commentdate)) FROM comments_tb z INNER JOIN users_tb y ON y.id=z.commentedby  
-    WHERE z.anscomment=b.ansid) AS comments FROM questions_tb a LEFT JOIN (answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid 
+  const query = `SELECT a.*,c.name,b.*, x.name AS ansby, (SELECT SUM(vote) FROM votes_tb WHERE ansvote=b.ansid) AS vote 
+    FROM questions_tb a LEFT JOIN (answers_tb b INNER JOIN users_tb x ON x.id=b.answeredby) ON a.qnsid=b.questionid 
     INNER JOIN users_tb c ON (c.id=a.askedby) WHERE a.qnsid=$1`;
   return client.runQuery(query, [questionid]);
 };
@@ -29,25 +28,16 @@ const allQuestions = (option = "", data = []) => {
 };
 
 const myQuestions = userid => {
-  return client.runQuery("SELECT title,askedate,qnsid FROM questions_tb WHERE askedby=$1", [
-    userid
+  query = `(SELECT title,askedate,qnsid, (SELECT COUNT(qnsid) FROM questions_tb WHERE askedby=$1) AS totalquestions
+  FROM questions_tb WHERE askedby=$2 ORDER BY qnsid DESC) UNION (SELECT '' AS title,CURRENT_DATE AS askedate,0 AS qnsid,
+   (SELECT COUNT(ansid) FROM answers_tb WHERE answeredby=$3) AS totalquestions FROM answers_tb WHERE answeredby=$4)`;
+  return client.runQuery(query, [
+    userid,userid,userid,userid
   ]);
 };
 
 const search = searchtext => {
   return allQuestions(" WHERE to_tsvector(a.title) @@ plainto_tsquery($1) ", [searchtext]);
-};
-
-const updateQuestion = question => {
-  const query =
-    "UPDATE questions_tb SET question=$1,title=$2 WHERE qnsid=$3 AND askedby=$4 RETURNING * ";
-  const data = [
-    validator.htmlSpecialCharacter(question.body),
-    validator.htmlSpecialCharacter(question.title),
-    question.id,
-    question.userid
-  ];
-  return client.runQuery(query, data);
 };
 
 const deleteQuestion = (id, userid) => {
@@ -60,7 +50,6 @@ module.exports = {
   allQuestions,
   postQuestion,
   getQuestion,
-  updateQuestion,
   deleteQuestion,
   search,
   myQuestions
