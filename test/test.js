@@ -82,7 +82,7 @@ describe("Test stackoverflowlite RESTAPI", () => {
         } else {
           expect(res).to.have.status(200);
           expect(res.body).to.be.an("object");
-          questionid = res.body.data[0].qnsid;
+          questionid = res.body.data.qnsid;
         }
       });
   });

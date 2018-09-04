@@ -1,14 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../db");
-const errorMsg = require("../services/error");
+const message = require("../services/message");
 
 const authenticate = data => {
   const query = "SELECT * FROM users_tb WHERE email=$1";
   return client.runQuery(query, [data.email]).then(user => {
     if (Array.isArray(user) && user.length > 0) {
       if (!bcrypt.compareSync(data.password || "", user[0].password))
-        return errorMsg.info("Wrong password");
+        return "Wrong password";
       const userData = {
         name: user[0].name,
         email: user[0].email,
@@ -16,20 +16,20 @@ const authenticate = data => {
         time: new Date()
       };
       return {
-        success: true,
-        message: "You have successfully login",
         token: jwt.sign(userData, "make-me-screet", {
           expiresIn: "2h"
         }),
-        data: "Token expired in 2 hours"
+        name: user[0].name,
+        email: user[0].email,
+        id: user[0].id
       };
     }
-    return errorMsg.info("Wrong email address");
+    return "Wrong email address";
   });
 };
 
 const checkAuth = req => {
-  var token = req.headers["token"];
+  const token = req.headers["token"];
   if (!token) return false;
 
   return jwt.verify(token, "make-me-screet", (err, decoded) => {
